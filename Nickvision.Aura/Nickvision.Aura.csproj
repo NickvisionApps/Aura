@@ -4,6 +4,17 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>Nickvision.Aura</PackageId>
+    <Version>2023.7.0</Version>
+    <Company>Nickvision</Company>
+    <Authors>Nickvision</Authors>
+    <Description>A cross-platform base for Nickvision applications</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>(c) Nickvision 2021-2023</Copyright>
+    <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
+    <PackageReleaseNotes>- Initial Release</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

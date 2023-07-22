@@ -70,6 +70,11 @@ public class AppInfo
     public string TranslatorCredits { get; set; }
 
     /// <summary>
+    /// Whether or not the application version is a development version
+    /// </summary>
+    public bool IsDevVersion => Version.Contains("-");
+
+    /// <summary>
     /// Constructs an AppInfo
     /// </summary>
     internal AppInfo()
@@ -89,12 +94,6 @@ public class AppInfo
         Artists = new Dictionary<string, Uri>();
         TranslatorCredits = "";
     }
-
-    /// <summary>
-    /// Gets whether or not the application version is a development version
-    /// </summary>
-    /// <returns>True for development version, else false</returns>
-    public bool GetIsDevelVersion() => Version.Contains("-");
     
     /// <summary>
     /// Convert changelog to HTML format
