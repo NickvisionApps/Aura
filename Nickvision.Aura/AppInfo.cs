@@ -113,4 +113,19 @@ public class AppInfo
             return Markdown.ToHtml(result.ToString());
         }
     }
+
+    /// <summary>
+    /// Convert dictionary with urls to string array
+    /// </summary>
+    /// <param name="dict">Dictionary with urls</param>
+    /// <returns>String array</returns>
+    public string[] ConvertURLDictToArray(Dictionary<string, Uri> dict)
+    {
+        var list = new List<string>();
+        foreach (var pair in dict)
+        {
+            list.Add($"{pair.Key} {pair.Value}");
+        }
+        return list.ToArray();
+    }
 }
