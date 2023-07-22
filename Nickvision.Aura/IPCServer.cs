@@ -1,7 +1,5 @@
-using System;
 using System.IO.Pipes;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Nickvision.Aura;
 
@@ -13,6 +11,9 @@ public class IPCServer
     private readonly string _id;
     private bool _running;
     
+    /// <summary>
+    /// Occurs when a command is received
+    /// </summary>
     public EventHandler<Dictionary<string, string>>? CommandReceived;
     
     /// <summary>
@@ -59,6 +60,9 @@ public class IPCServer
         return _running;
     }
     
+    /// <summary>
+    /// Triggers the server to start listening for commands
+    /// </summary>
     public void StartListeningServer()
     {
         while (_running)

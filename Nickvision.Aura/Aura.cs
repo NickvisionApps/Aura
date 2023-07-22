@@ -9,8 +9,14 @@ public class Aura
 {
     private static Aura? _instance;
     
+    /// <summary>
+    /// The AppInfo object
+    /// </summary>
     public AppInfo AppInfo { get; init; }
-    
+
+    /// <summary>
+    /// Occurs when there are start arguments
+    /// </summary>
     public event EventHandler<Dictionary<string, string>>? StartArgumentsReceived;
     
     /// <summary>
