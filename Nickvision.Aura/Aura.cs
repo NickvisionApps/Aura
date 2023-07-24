@@ -14,10 +14,14 @@ public class Aura
     /// </summary>
     public AppInfo AppInfo { get; init; }
 
-    /// <summary>
-    /// Occurs when there are start arguments
-    /// </summary>
+    public Dictionary<string, object> ConfigFiles;
+
     public event EventHandler<Dictionary<string, string>>? StartArgumentsReceived;
+
+    /// <summary>
+    /// Occurs when the configuration is saved to disk
+    /// </summary>
+    public static event EventHandler<string>? ConfigSaved;
     
     /// <summary>
     /// Construct Aura
@@ -36,6 +40,7 @@ public class Aura
             Description = description
         };
         _instance = this;
+        ConfigFiles = new Dictionary<string, object>();
     }
     
     /// <summary>
@@ -75,5 +80,29 @@ public class Aura
             Environment.Exit(0);
         }
         return server;
+    }
+
+    /// <summary>
+    /// Set config to be loaded from JSON file
+    /// </summary>
+    /// <typeparam name="T">Object type</typeparam>
+    /// <param name="key">File name</param>
+    public void SetConfig<T>(string key)
+    {
+        ConfigFiles[key] = ConfigLoader.Load<T>(key)!;
+    }
+
+    /// <summary>
+    /// Save config to JSON file
+    /// </summary>
+    /// <param name="key">File name</param>
+    public void SaveConfig(string key)
+    {
+        if (!ConfigFiles.ContainsKey(key))
+        {
+            throw new Exception($"Configuration file \"{key}\" was not set.");
+        }
+        ConfigLoader.Save(ConfigFiles[key], key);
+        ConfigSaved?.Invoke(this, key);
     }
 }
