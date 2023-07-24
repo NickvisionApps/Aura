@@ -15,10 +15,15 @@
     <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
     <PackageReleaseNotes>- Initial Release</PackageReleaseNotes>
+    <PackageIcon>logo-r.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.31.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <None Include="Resources\logo-r.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
