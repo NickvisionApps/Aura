@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Nickvision.Aura;
 
@@ -15,9 +16,14 @@ public class Aura
     public AppInfo AppInfo { get; init; }
 
     /// <summary>
-    /// Occurs when there are start arguments
+    /// Dictionary of configuration files that were set
     /// </summary>
-    public event EventHandler<Dictionary<string, string>>? StartArgumentsReceived;
+    public Dictionary<string, IConfiguration> ConfigFiles;
+
+    /// <summary>
+    /// Occurs when the configuration is saved to disk
+    /// </summary>
+    public static event EventHandler<string>? ConfigSaved;
     
     /// <summary>
     /// Construct Aura
@@ -36,6 +42,7 @@ public class Aura
             Description = description
         };
         _instance = this;
+        ConfigFiles = new Dictionary<string, IConfiguration>();
     }
     
     /// <summary>
@@ -55,17 +62,10 @@ public class Aura
     }
     
     /// <summary>
-    /// Process command-line arguments
-    /// </summary>
-    /// <remarks>Don't use this if using Communicate, IPCServer will call it on start too</remarks>
-    internal void ProcessCommandLine(string[] args) => StartArgumentsReceived?.Invoke(this, CommandLine.Parse(args));
-    
-    /// <summary>
     /// Start IPCServer or send command to a running one and quit
     /// </summary>
-    /// <param name="args">Command-line arguments to process/send</param>
+    /// <param name="args">Command-line arguments to send</param>
     /// <returns>New IPCServer</returns>
-    /// <remarks>If using Communicate, don't use ProcessCommandLine, IPCServer will process arguments on start too</remarks>
     public IPCServer Communicate(string[] args)
     {
         var server = new IPCServer();
@@ -75,5 +75,26 @@ public class Aura
             Environment.Exit(0);
         }
         return server;
+    }
+
+    /// <summary>
+    /// Set config to be loaded from JSON file
+    /// </summary>
+    /// <typeparam name="T">Object type</typeparam>
+    /// <param name="key">File name</param>
+    public void SetConfig<T>(string key) where T : IConfiguration => ConfigFiles[key] = ConfigLoader.Load<T>(key)!;
+
+    /// <summary>
+    /// Save config to JSON file
+    /// </summary>
+    /// <param name="key">File name</param>
+    public void SaveConfig(string key)
+    {
+        if (!ConfigFiles.ContainsKey(key))
+        {
+            throw new Exception($"Configuration file \"{key}\" was not set.");
+        }
+        ConfigLoader.Save(ConfigFiles[key], key);
+        ConfigSaved?.Invoke(this, key);
     }
 }
