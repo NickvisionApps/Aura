@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 
 namespace Nickvision.Aura;
 
@@ -22,12 +24,13 @@ public static class ConfigLoader
     /// <returns>Loaded or new object</returns>
     internal static T Load<T>(string key)
     {
-        if (!File.Exists($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json"))
+        var path = $"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json";
+        if (!File.Exists(path))
         {
             Directory.CreateDirectory(ConfigDir);
-            Save(new object(), key);
+            File.WriteAllLines(path, new []{ "{}" });
         }
-        return JsonSerializer.Deserialize<T>(File.ReadAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json"))!;
+        return JsonSerializer.Deserialize<T>(File.ReadAllText(path))!;
     }
     
     /// <summary>
@@ -35,5 +38,5 @@ public static class ConfigLoader
     /// </summary>
     /// <param name="obj">Object to save</param>
     /// <param name="key">File name</param>
-    internal static void Save(object obj, string key) => File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true }));
+    internal static void Save(object obj, string key) => File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
 }
