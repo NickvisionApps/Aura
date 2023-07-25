@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Nickvision.Aura;
 
@@ -15,8 +16,6 @@ public class Aura
     public AppInfo AppInfo { get; init; }
 
     public Dictionary<string, object> ConfigFiles;
-
-    public event EventHandler<Dictionary<string, string>>? StartArgumentsReceived;
 
     /// <summary>
     /// Occurs when the configuration is saved to disk
@@ -60,12 +59,6 @@ public class Aura
     }
     
     /// <summary>
-    /// Process command-line arguments
-    /// </summary>
-    /// <remarks>Don't use this if using Communicate, IPCServer will call it on start too</remarks>
-    internal void ProcessCommandLine(string[] args) => StartArgumentsReceived?.Invoke(this, CommandLine.Parse(args));
-    
-    /// <summary>
     /// Start IPCServer or send command to a running one and quit
     /// </summary>
     /// <param name="args">Command-line arguments to process/send</param>
@@ -87,10 +80,7 @@ public class Aura
     /// </summary>
     /// <typeparam name="T">Object type</typeparam>
     /// <param name="key">File name</param>
-    public void SetConfig<T>(string key)
-    {
-        ConfigFiles[key] = ConfigLoader.Load<T>(key)!;
-    }
+    public void SetConfig<T>(string key) => ConfigFiles[key] = ConfigLoader.Load<T>(key)!;
 
     /// <summary>
     /// Save config to JSON file

@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.IO.Pipes;
 using System.Text;
 
@@ -14,7 +16,7 @@ public class IPCServer
     /// <summary>
     /// Occurs when a command is received
     /// </summary>
-    public EventHandler<Dictionary<string, string>>? CommandReceived;
+    public EventHandler<string[]>? CommandReceived;
     
     /// <summary>
     /// Construct IPCServer
@@ -51,10 +53,6 @@ public class IPCServer
         catch (TimeoutException)
         {
             _running = true;
-            if (args.Length > 0)
-            {
-                Aura.Active.ProcessCommandLine(args);
-            }
             Task.Run(StartListeningServer);
         }
         return _running;
@@ -80,7 +78,7 @@ public class IPCServer
                     args[i] = reader.ReadString();
                 }
                 Console.WriteLine("[AURA] Command received.");
-                CommandReceived?.Invoke(this, CommandLine.Parse(args));
+                CommandReceived?.Invoke(this, args);
             }
             catch (Exception ex)
             {
