@@ -15,6 +15,9 @@ public class Aura
     /// </summary>
     public AppInfo AppInfo { get; init; }
 
+    /// <summary>
+    /// Dictionary of configuration files that were set
+    /// </summary>
     public Dictionary<string, object> ConfigFiles;
 
     /// <summary>
@@ -61,9 +64,8 @@ public class Aura
     /// <summary>
     /// Start IPCServer or send command to a running one and quit
     /// </summary>
-    /// <param name="args">Command-line arguments to process/send</param>
+    /// <param name="args">Command-line arguments to send</param>
     /// <returns>New IPCServer</returns>
-    /// <remarks>If using Communicate, don't use ProcessCommandLine, IPCServer will process arguments on start too</remarks>
     public IPCServer Communicate(string[] args)
     {
         var server = new IPCServer();
