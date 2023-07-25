@@ -22,7 +22,7 @@ public static class ConfigLoader
     /// <typeparam name="T">Type of the object to deserialize</typeparam>
     /// <param name="key">File name</param>
     /// <returns>Loaded or new object</returns>
-    internal static T Load<T>(string key)
+    internal static T Load<T>(string key) where T : IConfiguration
     {
         var path = $"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json";
         if (!File.Exists(path))
@@ -36,7 +36,7 @@ public static class ConfigLoader
     /// <summary>
     /// Save object to JSON file
     /// </summary>
-    /// <param name="obj">Object to save</param>
+    /// <param name="obj">IConfiguration object to save</param>
     /// <param name="key">File name</param>
-    internal static void Save(object obj, string key) => File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
+    internal static void Save(IConfiguration obj, string key) => File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
 }

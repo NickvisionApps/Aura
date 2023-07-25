@@ -18,7 +18,7 @@ public class Aura
     /// <summary>
     /// Dictionary of configuration files that were set
     /// </summary>
-    public Dictionary<string, object> ConfigFiles;
+    public Dictionary<string, IConfiguration> ConfigFiles;
 
     /// <summary>
     /// Occurs when the configuration is saved to disk
@@ -42,7 +42,7 @@ public class Aura
             Description = description
         };
         _instance = this;
-        ConfigFiles = new Dictionary<string, object>();
+        ConfigFiles = new Dictionary<string, IConfiguration>();
     }
     
     /// <summary>
@@ -82,7 +82,7 @@ public class Aura
     /// </summary>
     /// <typeparam name="T">Object type</typeparam>
     /// <param name="key">File name</param>
-    public void SetConfig<T>(string key) => ConfigFiles[key] = ConfigLoader.Load<T>(key)!;
+    public void SetConfig<T>(string key) where T : IConfiguration => ConfigFiles[key] = ConfigLoader.Load<T>(key)!;
 
     /// <summary>
     /// Save config to JSON file
