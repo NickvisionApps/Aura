@@ -38,5 +38,5 @@ public static class ConfigLoader
     /// </summary>
     /// <param name="obj">IConfiguration object to save</param>
     /// <param name="key">File name</param>
-    internal static void Save(IConfiguration obj, string key) => File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
+    internal static void Save(IConfiguration obj, string key) => File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize((object)obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
 }
