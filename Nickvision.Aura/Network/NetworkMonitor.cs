@@ -11,30 +11,13 @@ namespace Nickvision.Aura.Network;
 /// </summary>
 public class NetworkMonitor : IDisposable
 {
-    public event Action<NetworkState>? _stateChanged;
-    
-    /// <summary>
-    /// Occurs when network state is changed
-    /// </summary>
-    public event Action<NetworkState> StateChanged
-    {
-        add
-        {
-            _stateChanged += value;
-            Task.Run(async () => _stateChanged.Invoke(await GetStateAsync()));
-        }
-
-        remove
-        {
-            _stateChanged -= value;
-        }
-    }
-    
     private bool _disposed;
     private Connection? _dbusConnection;
     private INetworkManager? _networkManager;
     private string[]? _networkAddresses;
     
+    private event Action<NetworkState>? _stateChanged;
+
     /// <summary>
     /// Construct NetworkMonitor
     /// </summary>
@@ -57,6 +40,23 @@ public class NetworkMonitor : IDisposable
     /// Finalizes the NetworkMonitor
     /// </summary>
     ~NetworkMonitor() => Dispose(false);
+    
+    /// <summary>
+    /// Occurs when network state is changed
+    /// </summary>
+    public event Action<NetworkState> StateChanged
+    {
+        add
+        {
+            _stateChanged += value;
+            Task.Run(async () => _stateChanged.Invoke(await GetStateAsync()));
+        }
+
+        remove
+        {
+            _stateChanged -= value;
+        }
+    }
 
     /// <summary>
     /// Frees resources used by the NetworkMonitor object
