@@ -18,13 +18,8 @@ public class Aura
     /// <summary>
     /// Dictionary of configuration files that were set
     /// </summary>
-    public Dictionary<string, IConfiguration> ConfigFiles;
+    public Dictionary<string, ConfigurationBase> ConfigFiles { get; init; }
 
-    /// <summary>
-    /// Occurs when the configuration is saved to disk
-    /// </summary>
-    public static event EventHandler<string>? ConfigSaved;
-    
     /// <summary>
     /// Construct Aura
     /// </summary>
@@ -42,7 +37,7 @@ public class Aura
             Description = description
         };
         _instance = this;
-        ConfigFiles = new Dictionary<string, IConfiguration>();
+        ConfigFiles = new Dictionary<string, ConfigurationBase>();
     }
     
     /// <summary>
@@ -82,7 +77,7 @@ public class Aura
     /// </summary>
     /// <typeparam name="T">Object type</typeparam>
     /// <param name="key">File name</param>
-    public void SetConfig<T>(string key) where T : IConfiguration => ConfigFiles[key] = ConfigLoader.Load<T>(key)!;
+    public void SetConfig<T>(string key) where T : ConfigurationBase => ConfigFiles[key] = ConfigurationLoader.Load<T>(key)!;
 
     /// <summary>
     /// Save config to JSON file
@@ -94,7 +89,6 @@ public class Aura
         {
             throw new Exception($"Configuration file \"{key}\" was not set.");
         }
-        ConfigLoader.Save(ConfigFiles[key], key);
-        ConfigSaved?.Invoke(this, key);
+        ConfigurationLoader.Save(ConfigFiles[key], key);
     }
 }
