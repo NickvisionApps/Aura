@@ -9,7 +9,7 @@ namespace Nickvision.Aura;
 /// <summary>
 /// Loader for JSON configuration files
 /// </summary>
-public static class ConfigLoader
+public static class ConfigurationLoader
 {
     /// <summary>
     /// Configuration files directory
@@ -22,7 +22,7 @@ public static class ConfigLoader
     /// <typeparam name="T">Type of the object to deserialize</typeparam>
     /// <param name="key">File name</param>
     /// <returns>Loaded or new object</returns>
-    internal static T Load<T>(string key) where T : IConfiguration
+    internal static T Load<T>(string key) where T : ConfigurationBase
     {
         var path = $"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json";
         if (!File.Exists(path))
@@ -32,11 +32,15 @@ public static class ConfigLoader
         }
         return JsonSerializer.Deserialize<T>(File.ReadAllText(path))!;
     }
-    
+
     /// <summary>
     /// Save object to JSON file
     /// </summary>
     /// <param name="obj">IConfiguration object to save</param>
     /// <param name="key">File name</param>
-    internal static void Save(IConfiguration obj, string key) => File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize((object)obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
+    internal static void Save(ConfigurationBase obj, string key)
+    {
+        File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize((object)obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
+        obj.RaiseSavedEvent();
+    }
 }
