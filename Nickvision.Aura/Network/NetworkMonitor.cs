@@ -128,6 +128,10 @@ public class NetworkMonitor : IDisposable
                     return NetworkState.ConnectedGlobal;
                 }
             }
+            catch (PlatformNotSupportedException e)
+            {
+                return NetworkState.ConnectedGlobal;
+            }
             catch { }
         }
         return NetworkState.Unknown;
