@@ -16,7 +16,11 @@ public class NetworkMonitor : IDisposable
     private INetworkManager? _networkManager;
     private string[]? _networkAddresses;
     
-    private event EventHandler<NetworkState>? _stateChanged;
+    /// <summary>
+    /// Occurs when the network state is changed
+    /// </summary>
+    /// <remarks>The boolean value is true if there is an internet connection, else false</remarks>
+    private event EventHandler<bool>? _stateChanged;
 
     /// <summary>
     /// Construct NetworkMonitor
@@ -40,7 +44,13 @@ public class NetworkMonitor : IDisposable
                 netmon._dbusConnection = new Connection(Address.System);
                 await netmon._dbusConnection.ConnectAsync();
                 netmon._networkManager = netmon._dbusConnection.CreateProxy<INetworkManager>("org.freedesktop.NetworkManager", new ObjectPath("/org/freedesktop/NetworkManager"));
-                await netmon._networkManager.WatchStateChangedAsync(state => netmon._stateChanged?.Invoke(netmon, state));
+                await netmon._networkManager.WatchStateChangedAsync(state => netmon._stateChanged?.Invoke(netmon, state switch
+                {
+                    NetworkState.ConnectedGlobal => true,
+                    NetworkState.ConnectedSite => true,
+                    NetworkState.Unknown => true,
+                    _ => false
+                }));
             }
             catch
             {
@@ -63,7 +73,7 @@ public class NetworkMonitor : IDisposable
     /// <summary>
     /// Occurs when network state is changed
     /// </summary>
-    public event EventHandler<NetworkState> StateChanged
+    public event EventHandler<bool> StateChanged
     {
         add
         {
@@ -98,6 +108,25 @@ public class NetworkMonitor : IDisposable
         _dbusConnection?.Dispose();
         _disposed = true;
     }
+
+    /// <summary>
+    /// Get current network state
+    /// </summary>
+    /// <returns>True if internet connection, else false</returns>
+    public async Task<bool> GetStateAsync()
+    {
+        if (_networkManager != null)
+        {
+            return (await _networkManager.GetAsync<NetworkState>("State")) switch
+            {
+                NetworkState.ConnectedGlobal => true,
+                NetworkState.ConnectedSite => true,
+                NetworkState.Unknown => true,
+                _ => false
+            };
+        }
+        return await PingReliableSitesAsync();
+    }
     
     /// <summary>
     /// Setup network monitor to use dotnet NetworkChange and ping
@@ -114,8 +143,8 @@ public class NetworkMonitor : IDisposable
     /// <summary>
     /// Ping reliable web sites to ensure network connection
     /// </summary>
-    /// <returns>Network state</returns>
-    private async Task<NetworkState> PingReliableSitesAsync()
+    /// <returns>True if internet connection, else false</returns>
+    private async Task<bool> PingReliableSitesAsync()
     {
         foreach (var addr in _networkAddresses!)
         {
@@ -125,21 +154,15 @@ public class NetworkMonitor : IDisposable
                 var reply = await ping.SendPingAsync(addr);
                 if (reply.Status == IPStatus.Success)
                 {
-                    return NetworkState.ConnectedGlobal;
+                    return true;
                 }
             }
             catch (PlatformNotSupportedException)
             {
-                return NetworkState.ConnectedGlobal;
+                return true;
             }
             catch { }
         }
-        return NetworkState.Unknown;
+        return false;
     }
-    
-    /// <summary>
-    /// Get current network state
-    /// </summary>
-    /// <returns>Network state</returns>
-    public async Task<NetworkState> GetStateAsync() => await (_networkManager?.GetAsync<NetworkState>("State") ?? PingReliableSitesAsync());
 }
