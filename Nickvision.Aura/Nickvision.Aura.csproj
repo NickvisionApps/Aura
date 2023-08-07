@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <PackageId>Nickvision.Aura</PackageId>
-    <Version>2023.8.2</Version>
+    <Version>2023.8.3</Version>
     <Company>Nickvision</Company>
     <Authors>Nickvision</Authors>
     <Description>A cross-platform base for Nickvision applications</Description>
@@ -20,7 +20,6 @@
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.31.0" />
     <PackageReference Include="Tmds.DBus" Version="0.15.0" />
-    <PackageReference Include="System.IO.Packaging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.5" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.5" />
   </ItemGroup>
