@@ -139,6 +139,21 @@ internal class Store : IDisposable
     public static bool Exists(string name) => File.Exists($"{StoreDir}{name}.nring");
 
     /// <summary>
+    /// Destroys a Store by name
+    /// </summary>
+    /// <param name="name">The name of the Store</param>
+    /// <returns>True if destroyed, else false</returns>
+    public static bool Destroy(string name)
+    {
+        if (File.Exists($"{StoreDir}{name}.nring"))
+        {
+            File.Delete($"{StoreDir}{name}.nring");
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Frees resources used by the Store object
     /// </summary>
     public void Dispose()

@@ -58,6 +58,13 @@ public class Keyring : IDisposable
     public static bool Exists(string name) => Store.Exists(name);
 
     /// <summary>
+    /// Destroys a Keyring by name
+    /// </summary>
+    /// <param name="name">The name of the Keyring</param>
+    /// <returns>True if destroyed, else false</returns>
+    public static bool Destroy(string name) => Store.Destroy(name);
+
+    /// <summary>
     /// Frees resources used by the Keyring object
     /// </summary>
     public void Dispose()

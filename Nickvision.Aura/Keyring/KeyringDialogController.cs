@@ -86,7 +86,7 @@ public class KeyringDialogController
     /// <summary>
     /// Disables the Keyring and destroys its data
     /// </summary>
-    /// <returns>True if successful, false is Keyring already disabled</returns>
+    /// <returns>True if successful, false if Keyring already disabled</returns>
     public bool DisableKeyring()
     {
         if(Keyring != null)
@@ -94,6 +94,20 @@ public class KeyringDialogController
             Keyring.Destroy();
             Keyring = null;
             return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Resets the Keyring and destroys its data
+    /// </summary>
+    /// <returns>True if successful, false if Keyring doesn't exist or is unlocked</returns>
+    /// <remarks>Can only be used if the Keyring is not unlocked. If unlocked, use DisableKeyring()</remarks>
+    public bool ResetKeyring()
+    {
+        if (Keyring == null)
+        {
+            return Keyring.Destroy(_keyringName);
         }
         return false;
     }
