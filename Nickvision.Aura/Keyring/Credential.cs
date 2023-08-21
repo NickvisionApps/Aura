@@ -1,7 +1,21 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace Nickvision.Aura.Keyring;
-    
+
+/// <summary>
+/// Strengths for a password
+/// </summary>
+public enum PasswordStrength
+{
+    Blank = 0,
+    VeryWeak = 1,
+    Weak = 2,
+    Medium = 3,
+    Strong = 4,
+    VeryStrong = 5
+}
+
 /// <summary>
 /// A model of a credential stored in the keyring
 /// </summary>    
@@ -59,6 +73,45 @@ public class Credential : IComparable<Credential>, IEquatable<Credential>
         Name = name;
         Username = username;
         Password = password;
+    }
+
+    /// <summary>
+    /// Gets the strength of a password
+    /// </summary>
+    /// <param name="password">The password to check</param>
+    /// <returns>PasswordStrength</returns>
+    public static PasswordStrength GetPasswordStrength(string password)
+    {
+        var strength = 0;
+        if (password.Length < 1)
+        {
+            return PasswordStrength.Blank;
+        }
+        if (password.Length < 4)
+        {
+            return PasswordStrength.VeryWeak;
+        }
+        if (password.Length >= 8)
+        {
+            strength++;
+        }
+        if (password.Length >= 12)
+        {
+            strength++;
+        }
+        if (Regex.Match(password, @"/\d+/", RegexOptions.ECMAScript).Success)
+        {
+            strength++;
+        }
+        if (Regex.Match(password, @"/[a-z]/", RegexOptions.ECMAScript).Success && Regex.Match(password, @"/[A-Z]/", RegexOptions.ECMAScript).Success)
+        {
+            strength++;
+        }
+        if (Regex.Match(password, @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/", RegexOptions.ECMAScript).Success)
+        {
+            strength++;
+        }
+        return (PasswordStrength)strength;
     }
 
     /// <summary>
