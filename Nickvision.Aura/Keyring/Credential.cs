@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Nickvision.Aura.Keyring;
@@ -82,7 +83,6 @@ public class Credential : IComparable<Credential>, IEquatable<Credential>
     /// <returns>PasswordStrength</returns>
     public static PasswordStrength GetPasswordStrength(string password)
     {
-        var strength = 0;
         if (password.Length < 1)
         {
             return PasswordStrength.Blank;
@@ -91,23 +91,20 @@ public class Credential : IComparable<Credential>, IEquatable<Credential>
         {
             return PasswordStrength.VeryWeak;
         }
+        var strength = 1;
         if (password.Length >= 8)
         {
             strength++;
         }
-        if (password.Length >= 12)
+        if (password.Any(Char.IsDigit))
         {
             strength++;
         }
-        if (Regex.Match(password, @"/\d+/").Success)
+        if (password.Any(Char.IsLetter))
         {
             strength++;
         }
-        if (Regex.Match(password, @"/[a-z]/").Success && Regex.Match(password, @"/[A-Z]/").Success)
-        {
-            strength++;
-        }
-        if (Regex.Match(password, @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/").Success)
+        if (password.Any(Char.IsSymbol))
         {
             strength++;
         }
