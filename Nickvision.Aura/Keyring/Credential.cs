@@ -99,15 +99,15 @@ public class Credential : IComparable<Credential>, IEquatable<Credential>
         {
             strength++;
         }
-        if (Regex.Match(password, @"/\d+/", RegexOptions.ECMAScript).Success)
+        if (Regex.Match(password, @"/\d+/").Success)
         {
             strength++;
         }
-        if (Regex.Match(password, @"/[a-z]/", RegexOptions.ECMAScript).Success && Regex.Match(password, @"/[A-Z]/", RegexOptions.ECMAScript).Success)
+        if (Regex.Match(password, @"/[a-z]/").Success && Regex.Match(password, @"/[A-Z]/").Success)
         {
             strength++;
         }
-        if (Regex.Match(password, @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/", RegexOptions.ECMAScript).Success)
+        if (Regex.Match(password, @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/").Success)
         {
             strength++;
         }
