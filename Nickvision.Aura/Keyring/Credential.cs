@@ -104,7 +104,7 @@ public class Credential : IComparable<Credential>, IEquatable<Credential>
         {
             strength++;
         }
-        if (password.Any(Char.IsSymbol))
+        if (password.Any(Char.IsSymbol) || password.Any(Char.IsPunctuation))
         {
             strength++;
         }

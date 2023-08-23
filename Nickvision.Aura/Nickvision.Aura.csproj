@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <PackageId>Nickvision.Aura</PackageId>
-    <Version>2023.8.7</Version>
+    <Version>2023.8.8</Version>
     <Company>Nickvision</Company>
     <Authors>Nickvision</Authors>
     <Description>A cross-platform base for Nickvision applications</Description>
