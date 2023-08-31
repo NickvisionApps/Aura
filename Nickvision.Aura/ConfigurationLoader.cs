@@ -28,7 +28,7 @@ public static class ConfigurationLoader
         if (!File.Exists(path))
         {
             Directory.CreateDirectory(ConfigDir);
-            File.WriteAllLines(path, new []{ "{}" });
+            File.WriteAllText(path, "{}");
         }
         return JsonSerializer.Deserialize<T>(File.ReadAllText(path))!;
     }
