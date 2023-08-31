@@ -14,7 +14,7 @@ public static class ConfigurationLoader
     /// <summary>
     /// Configuration files directory
     /// </summary>
-    public static readonly string ConfigDir = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{Path.DirectorySeparatorChar}{Aura.Active.AppInfo.Name}";
+    public static readonly string ConfigDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Aura.Active.AppInfo.Name);
     
     /// <summary>
     /// Load object from JSON file
@@ -24,7 +24,7 @@ public static class ConfigurationLoader
     /// <returns>Loaded or new object</returns>
     internal static T Load<T>(string key) where T : ConfigurationBase
     {
-        var path = $"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json";
+        var path = Path.Combine(ConfigDir, $"{key}.json");
         if (!File.Exists(path))
         {
             Directory.CreateDirectory(ConfigDir);
@@ -40,7 +40,7 @@ public static class ConfigurationLoader
     /// <param name="key">File name</param>
     internal static void Save(ConfigurationBase obj, string key)
     {
-        File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize((object)obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
+        File.WriteAllText(Path.Combine(ConfigDir, $"{key}.json"), JsonSerializer.Serialize((object)obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
         obj.RaiseSavedEvent();
     }
 }
