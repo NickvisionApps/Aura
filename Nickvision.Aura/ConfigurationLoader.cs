@@ -12,11 +12,6 @@ namespace Nickvision.Aura;
 public static class ConfigurationLoader
 {
     /// <summary>
-    /// Configuration files directory
-    /// </summary>
-    public static readonly string ConfigDir = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{Path.DirectorySeparatorChar}{Aura.Active.AppInfo.Name}";
-    
-    /// <summary>
     /// Load object from JSON file
     /// </summary>
     /// <typeparam name="T">Type of the object to deserialize</typeparam>
@@ -24,13 +19,20 @@ public static class ConfigurationLoader
     /// <returns>Loaded or new object</returns>
     internal static T Load<T>(string key) where T : ConfigurationBase
     {
-        var path = $"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json";
-        if (!File.Exists(path))
+        var path = $"{UserDirectories.ApplicationConfig}{Path.DirectorySeparatorChar}{key}.json";
+        try
         {
-            Directory.CreateDirectory(ConfigDir);
-            File.WriteAllText(path, "{}");
+            return JsonSerializer.Deserialize<T>(File.ReadAllText(path))!;
         }
-        return JsonSerializer.Deserialize<T>(File.ReadAllText(path))!;
+        catch
+        {
+            if (File.Exists(path))
+            {
+                File.Move(path, $"{path}.bak", true);
+            }
+            File.WriteAllText(path, "{}");
+            return JsonSerializer.Deserialize<T>(File.ReadAllText(path))!;
+        }
     }
 
     /// <summary>
@@ -40,7 +42,7 @@ public static class ConfigurationLoader
     /// <param name="key">File name</param>
     internal static void Save(ConfigurationBase obj, string key)
     {
-        File.WriteAllText($"{ConfigDir}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize((object)obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
+        File.WriteAllText($"{UserDirectories.ApplicationConfig}{Path.DirectorySeparatorChar}{key}.json", JsonSerializer.Serialize((object)obj, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) }));
         obj.RaiseSavedEvent();
     }
 }
