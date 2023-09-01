@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageId>Nickvision.Aura</PackageId>
     <Version>2023.8.8</Version>
     <Company>Nickvision</Company>
