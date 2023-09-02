@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -31,7 +30,7 @@ public static class ConfigurationLoader
                 File.Move(path, $"{path}.bak", true);
             }
             File.WriteAllText(path, "{}");
-            return JsonSerializer.Deserialize<T>(File.ReadAllText(path))!;
+            return JsonSerializer.Deserialize<T>("{}")!;
         }
     }
 
