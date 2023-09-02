@@ -221,7 +221,7 @@ public static class UserDirectories
             {
                 return GetXDGUserDirectory("XDG_PUBLICSHARE_DIR");
             }
-            return Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+            throw new PlatformNotSupportedException();
         }
     }
 

@@ -130,8 +130,15 @@ public class UserDirectoriesTest
     [Fact]
     public void PublicShare()
     {
-        _output.WriteLine($"PublicShare: {UserDirectories.PublicShare}");
-        Assert.True(Directory.Exists(UserDirectories.PublicShare));
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            _output.WriteLine($"PublicShare: {UserDirectories.PublicShare}");
+            Assert.True(Directory.Exists(UserDirectories.PublicShare));
+        }
+        else
+        {
+            Assert.Throws<PlatformNotSupportedException>(() => Directory.Exists(UserDirectories.PublicShare));
+        }
     }
     
     [Fact]
