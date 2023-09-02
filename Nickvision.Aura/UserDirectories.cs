@@ -11,7 +11,7 @@ namespace Nickvision.Aura;
 public static class UserDirectories
 {
     [DllImport("shell32.dll")]
-    private static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid id, int flags, nint token, out nint path);
+    private static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid id, int flags, nint token, [MarshalAs(UnmanagedType.LPWStr)] out string path);
     
     private static Guid WindowsDownloadsFolderGuid = new ("374DE290-123F-4565-9164-39C4925E467B");
     private static Dictionary<string, string> _xdgDirectories = new ();
@@ -163,7 +163,7 @@ public static class UserDirectories
     /// <summary>
     /// Downloads directory
     /// </summary>
-    public static string Download
+    public static string Downloads
     {
         get
         {
@@ -173,10 +173,8 @@ public static class UserDirectories
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && Environment.OSVersion.Version.Major > 5) // Windows Vista or later
             {
-                SHGetKnownFolderPath(WindowsDownloadsFolderGuid, 0, IntPtr.Zero, out var ptr);
-                var path = Marshal.PtrToStringUni(ptr);
-                Marshal.FreeCoTaskMem(ptr);
-                return path!;
+                SHGetKnownFolderPath(WindowsDownloadsFolderGuid, 0, IntPtr.Zero, out var path);
+                return path;
             }
             throw new PlatformNotSupportedException();
         }
