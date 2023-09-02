@@ -147,4 +147,11 @@ public class UserDirectoriesTest
         _output.WriteLine($"Templates: {UserDirectories.Templates}");
         Assert.True(Directory.Exists(UserDirectories.Templates));
     }
+
+    [Fact]
+    public void Videos()
+    {
+        _output.WriteLine($"Videos: {UserDirectories.Videos}");
+        Assert.True(Directory.Exists(UserDirectories.Videos));
+    }
 }
