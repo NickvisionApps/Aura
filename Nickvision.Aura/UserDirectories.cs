@@ -256,27 +256,6 @@ public static class UserDirectories
     }
 
     /// <summary>
-    /// Parse XDG config file with user directories paths
-    /// </summary>
-    private static void ParseXDGConfig()
-    {
-        if (_xdgDirectories.Count > 0)
-        {
-            return;
-        }
-        var lines = File.ReadLines($"{Config}/user-dirs.dirs");
-        foreach (var line in lines)
-        {
-            if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line))
-            {
-                continue;
-            }
-            var pair = line.Split("=");
-            _xdgDirectories[pair[0]] = pair[1].Replace("$HOME", Home).Trim('"');
-        }
-    }
-
-    /// <summary>
     /// Get XDG user directory path for specified key
     /// </summary>
     /// <param name="key">XDG key</param>
@@ -287,7 +266,19 @@ public static class UserDirectories
         {
             return Environment.GetEnvironmentVariable(key)!;
         }
-        ParseXDGConfig();
-        return _xdgDirectories[key];
+        if (_xdgDirectories.Count == 0)
+        {
+            var lines = File.ReadLines($"{Config}/user-dirs.dirs");
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+                var pair = line.Split("=");
+                _xdgDirectories[pair[0]] = pair[1].Replace("$HOME", Home).Trim('"');
+            }
+        }
+        return _xdgDirectories.TryGetValue(key, out var value) ? value : Home;
     }
 }
