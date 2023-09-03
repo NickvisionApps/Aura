@@ -27,7 +27,7 @@ public class Aura
     /// <param name="name">Name for AppInfo</param>
     /// <param name="shortName">ShortName for AppInfo</param>
     /// <param name="description">Description for AppInfo</param>
-    public Aura(string id, string name, string shortName, string description)
+    private Aura(string id, string name, string shortName, string description)
     {
         AppInfo = new AppInfo()
         {
@@ -36,8 +36,23 @@ public class Aura
             ShortName = shortName,
             Description = description
         };
-        _instance = this;
         ConfigFiles = new Dictionary<string, ConfigurationBase>();
+    }
+    
+    /// <summary>
+    /// Initialize Aura
+    /// </summary>
+    /// <param name="id">ID for AppInfo</param>
+    /// <param name="name">Name for AppInfo</param>
+    /// <param name="shortName">ShortName for AppInfo</param>
+    /// <param name="description">Description for AppInfo</param>
+    public static void Init(string id, string name, string shortName, string description)
+    {
+        if (_instance != null)
+        {
+            throw new AuraException("Aura is already initialized.");
+        }
+        _instance = new Aura(id, name, shortName, description);
     }
     
     /// <summary>
@@ -50,7 +65,7 @@ public class Aura
         {
             if (_instance == null)
             {
-                throw new Exception("Failed to get active Aura. Are you sure it's created?");
+                throw new AuraException("Failed to get active Aura. Are you sure it's initialized?");
             }
             return _instance;
         }
@@ -87,7 +102,7 @@ public class Aura
     {
         if (!ConfigFiles.ContainsKey(key))
         {
-            throw new Exception($"Configuration file \"{key}\" was not set.");
+            throw new AuraException($"Configuration file \"{key}\" was not set.");
         }
         ConfigurationLoader.Save(ConfigFiles[key], key);
     }
