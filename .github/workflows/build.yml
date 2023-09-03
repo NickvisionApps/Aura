@@ -26,3 +26,5 @@ jobs:
               run: dotnet restore Nickvision.Aura/Nickvision.Aura.csproj
             - name: Build
               run: dotnet build Nickvision.Aura/Nickvision.Aura.csproj --configuration Release --no-restore
+            - name: Test
+              run: dotnet test Nickvision.Aura.Tests/Nickvision.Aura.Tests.csproj --verbosity normal
