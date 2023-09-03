@@ -121,6 +121,7 @@ public class NetworkMonitor : IDisposable
             {
                 NetworkState.ConnectedGlobal => true,
                 NetworkState.ConnectedSite => true,
+                NetworkState.ConnectedLocal => true,
                 NetworkState.Unknown => true,
                 _ => false
             };
