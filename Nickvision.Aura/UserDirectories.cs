@@ -268,15 +268,22 @@ public static class UserDirectories
         }
         if (_xdgDirectories.Count == 0)
         {
-            var lines = File.ReadLines($"{Config}/user-dirs.dirs");
-            foreach (var line in lines)
+            try
             {
-                if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line))
+                var lines = File.ReadLines($"{Config}/user-dirs.dirs");
+                foreach (var line in lines)
                 {
-                    continue;
+                    if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line))
+                    {
+                        continue;
+                    }
+                    var pair = line.Split("=");
+                    _xdgDirectories[pair[0]] = pair[1].Replace("$HOME", Home).Trim('"');
                 }
-                var pair = line.Split("=");
-                _xdgDirectories[pair[0]] = pair[1].Replace("$HOME", Home).Trim('"');
+            }
+            catch (FileNotFoundException)
+            {
+                _xdgDirectories["FILE_NOT_FOUND"] = ""; // To avoid trying to read file again
             }
         }
         return _xdgDirectories.TryGetValue(key, out var value) ? value : Home;
