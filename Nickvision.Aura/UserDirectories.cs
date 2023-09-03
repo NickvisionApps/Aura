@@ -40,7 +40,9 @@ public static class UserDirectories
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                return string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")) ? $"{Home}/.config" : Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")!;
+                var path = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")) ? $"{Home}/.config" : Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")!;
+                Directory.CreateDirectory(path);
+                return path;
             }
             return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         }
@@ -68,7 +70,9 @@ public static class UserDirectories
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                return string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CACHE_HOME")) ? $"{Home}/.cache" : Environment.GetEnvironmentVariable("XDG_CACHE_HOME")!;
+                var path = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CACHE_HOME")) ? $"{Home}/.cache" : Environment.GetEnvironmentVariable("XDG_CACHE_HOME")!;
+                Directory.CreateDirectory(path);
+                return path;
             }
             return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         }
@@ -96,7 +100,9 @@ public static class UserDirectories
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                return string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_DATA_HOME")) ? $"{Home}/.local/share" : Environment.GetEnvironmentVariable("XDG_DATA_HOME")!;
+                var path = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_DATA_HOME")) ? $"{Home}/.local/share" : Environment.GetEnvironmentVariable("XDG_DATA_HOME")!;
+                Directory.CreateDirectory(path);
+                return path;
             }
             return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         }
