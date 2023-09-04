@@ -33,7 +33,7 @@ public class UserDirectoriesTest
     {
         try
         {
-            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests", "Aura Tests", "Test Aura library");
+            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
         }
         catch (AuraException) { }
         _output.WriteLine($"ApplicationConfig: {UserDirectories.ApplicationConfig}");
@@ -52,7 +52,7 @@ public class UserDirectoriesTest
     {
         try
         {
-            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests", "Aura Tests", "Test Aura library");
+            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
         }
         catch (AuraException) { }
         _output.WriteLine($"ApplicationCache: {UserDirectories.ApplicationCache}");
@@ -71,7 +71,7 @@ public class UserDirectoriesTest
     {
         try
         {
-            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests", "Aura Tests", "Test Aura library");
+            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
         }
         catch (AuraException) { }
         _output.WriteLine($"ApplicationLocalData: {UserDirectories.ApplicationLocalData}");
