@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.31.0" />
+    <PackageReference Include="Meziantou.Framework.Win32.CredentialManager" Version="1.4.2" />
     <PackageReference Include="Tmds.DBus" Version="0.15.0" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.5" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.5" />
