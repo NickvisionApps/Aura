@@ -39,17 +39,35 @@ public class Keyring : IDisposable
     public static Keyring? Access(string name, string? password = null)
     {
         password ??= SystemCredentialManager.GetPassword(name);
+        // If the password is not null, try to open the Store.
+        // -> If it fails because file not found, create new store with provided password.
+        // -> If it fails for any other reason, return null.
+        // If the password is null, try to create new Store with random password without overwriting. If it fails, return null.
         if (password != null)
         {
             try
             {
                 return new Keyring(Store.Load(name, password));
             }
-            catch (FileNotFoundException) { }
+            catch (FileNotFoundException)
+            {
+                try
+                {
+                    return new Keyring(Store.Create(name, password, false));
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
         try
         {
-            password ??= SystemCredentialManager.SetPassword(name);
+            password = SystemCredentialManager.SetPassword(name);
             return new Keyring(Store.Create(name, password, false));
         }
         catch
