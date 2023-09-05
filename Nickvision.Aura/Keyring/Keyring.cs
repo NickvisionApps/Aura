@@ -88,7 +88,11 @@ public class Keyring : IDisposable
     /// </summary>
     /// <param name="name">The name of the Keyring</param>
     /// <returns>True if destroyed, else false</returns>
-    public static bool Destroy(string name) => Store.Destroy(name);
+    public static bool Destroy(string name)
+    {
+        SystemCredentialManager.DeletePassword(name);
+        return Store.Destroy(name);
+    }
 
     /// <summary>
     /// Frees resources used by the Keyring object
