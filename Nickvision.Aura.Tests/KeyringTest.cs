@@ -12,10 +12,23 @@ public class KeyringTest
     }
     
     [Fact]
+    public void AccessTest()
+    {
+        var keyring = Keyring.Keyring.Access("org.nickvision.aura.test");
+        Assert.True(keyring != null);
+        keyring.Destroy();
+        keyring.Dispose();
+    }
+
+    [Fact]
     public void CredentialManagerTest()
     {
-        var keyring = Keyring.Keyring.Access("org.nickvision.test");
-        Assert.True(keyring != null);
+        var setPassword = Keyring.SystemCredentialManager.SetPassword("org.nickvision.aura.test");
+        Assert.True(setPassword.Length == 16);
+        var getPassword = Keyring.SystemCredentialManager.GetPassword("org.nickvision.aura.test");
+        Assert.True(setPassword == getPassword);
+        Keyring.SystemCredentialManager.DeletePassword("org.nickvision.aura.test");
+        Assert.True(Keyring.SystemCredentialManager.GetPassword("org.nickvision.aura.test") == null);
     }
     
     [Theory]
