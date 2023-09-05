@@ -62,14 +62,10 @@ public class KeyringDialogController
     /// Enables the Keyring
     /// </summary>
     /// <returns>True if successful, false is Keyring already enabled or error</returns>
-    public bool EnableKeyring(string password)
+    public bool EnableKeyring(string? password = null)
     {
         if(Keyring == null)
         {
-            if(string.IsNullOrEmpty(password))
-            {
-                return false;
-            }
             try
             {
                 Keyring = Keyring.Access(_keyringName, password);
