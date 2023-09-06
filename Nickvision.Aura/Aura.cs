@@ -44,7 +44,8 @@ public class Aura
     {
         if (_instance != null)
         {
-            throw new AuraException("Aura is already initialized.");
+            Console.WriteLine("[AURA] Warning: Aura was already initialized.");
+            return;
         }
         _instance = new Aura(id, name);
     }

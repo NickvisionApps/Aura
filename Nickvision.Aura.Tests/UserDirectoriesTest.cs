@@ -31,11 +31,7 @@ public class UserDirectoriesTest
     [Fact]
     public void ApplicationConfig()
     {
-        try
-        {
-            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
-        }
-        catch (AuraException) { }
+        Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
         _output.WriteLine($"ApplicationConfig: {UserDirectories.ApplicationConfig}");
         Assert.True(Directory.Exists(UserDirectories.ApplicationConfig));
     }
@@ -50,11 +46,7 @@ public class UserDirectoriesTest
     [Fact]
     public void ApplicationCache()
     {
-        try
-        {
-            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
-        }
-        catch (AuraException) { }
+        Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
         _output.WriteLine($"ApplicationCache: {UserDirectories.ApplicationCache}");
         Assert.True(Directory.Exists(UserDirectories.ApplicationCache));
     }
@@ -69,11 +61,7 @@ public class UserDirectoriesTest
     [Fact]
     public void ApplicationLocalData()
     {
-        try
-        {
-            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
-        }
-        catch (AuraException) { }
+        Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
         _output.WriteLine($"ApplicationLocalData: {UserDirectories.ApplicationLocalData}");
         Assert.True(Directory.Exists(UserDirectories.ApplicationLocalData));
     }
