@@ -66,15 +66,8 @@ public class KeyringDialogController
     {
         if(Keyring == null)
         {
-            try
-            {
-                Keyring = Keyring.Access(_keyringName, password);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            Keyring = Keyring.Access(_keyringName, password);
+            return Keyring != null;
         }
         return false;
     }
