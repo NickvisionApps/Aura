@@ -256,10 +256,10 @@ internal class Store : IDisposable
     public async Task<List<Credential>> LookupCredentialsAsync(string name)
     {
         await _database.OpenAsync();
-        await using var cmdQueryCredentials = _database.CreateCommand();
+        using var cmdQueryCredentials = _database.CreateCommand();
         cmdQueryCredentials.CommandText = "SELECT * FROM credentials where name = $name";
         cmdQueryCredentials.Parameters.AddWithValue("$name", name);
-        await using var readQueryCredentials = await cmdQueryCredentials.ExecuteReaderAsync();
+        using var readQueryCredentials = await cmdQueryCredentials.ExecuteReaderAsync();
         var credentials = new List<Credential>();
         while (await readQueryCredentials.ReadAsync())
         {
