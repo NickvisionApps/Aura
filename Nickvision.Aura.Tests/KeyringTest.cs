@@ -20,22 +20,6 @@ public class KeyringTest
         keyring.Destroy();
         keyring.Dispose();
     }
-
-    [Fact]
-    public void CredentialManagerTest()
-    {
-        var setPassword = Keyring.SystemCredentialManager.SetPassword("org.nickvision.aura.test");
-        if (setPassword == null)
-        {
-            _output.WriteLine("Failed to set password, skipping.");
-            return;
-        }
-        Assert.True(setPassword.Length == 16);
-        var getPassword = Keyring.SystemCredentialManager.GetPassword("org.nickvision.aura.test");
-        Assert.True(setPassword == getPassword);
-        Keyring.SystemCredentialManager.DeletePassword("org.nickvision.aura.test");
-        Assert.True(Keyring.SystemCredentialManager.GetPassword("org.nickvision.aura.test") == null);
-    }
     
     [Theory]
     [InlineData(4)]

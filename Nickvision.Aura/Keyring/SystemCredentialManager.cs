@@ -8,7 +8,7 @@ namespace Nickvision.Aura.Keyring;
 /// Object to access system credential manager
 /// </summary>
 /// <remarks>Uses Windows Credential Manager on Windows and LibSecret on Linux</remarks>
-public static partial class SystemCredentialManager
+internal static partial class SystemCredentialManager
 {
     [LibraryImport("libsecret-1.so.0", StringMarshalling = StringMarshalling.Utf8)]
     private static partial nint secret_schema_new(string name, int flags, nint args);
@@ -26,7 +26,7 @@ public static partial class SystemCredentialManager
     private const int SECRET_SCHEMA_NONE = 0;
 
     /// <summary>
-    /// Get keyring's password from credential manager
+    /// Gets keyring's password from credential manager
     /// </summary>
     /// <param name="name">Keyring name</param>
     /// <returns>Keyring password or null if failed to get password</returns>
@@ -47,7 +47,7 @@ public static partial class SystemCredentialManager
     }
 
     /// <summary>
-    /// Set random password for a keyring in credential manager
+    /// Sets random password for a keyring in credential manager
     /// </summary>
     /// <param name="name">Keyring name</param>
     /// <returns>Keyring password or null if failed to set password</returns>
@@ -74,7 +74,7 @@ public static partial class SystemCredentialManager
     }
 
     /// <summary>
-    /// Delete keyring's password from credential manager
+    /// Deletes keyring's password from credential manager
     /// </summary>
     /// <param name="name">Keyring name</param>
     public static void DeletePassword(string name)
