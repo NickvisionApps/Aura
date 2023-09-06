@@ -33,7 +33,7 @@ public class UserDirectoriesTest
     {
         try
         {
-            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests", "Aura Tests", "Test Aura library");
+            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
         }
         catch (AuraException) { }
         _output.WriteLine($"ApplicationConfig: {UserDirectories.ApplicationConfig}");
@@ -52,7 +52,7 @@ public class UserDirectoriesTest
     {
         try
         {
-            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests", "Aura Tests", "Test Aura library");
+            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
         }
         catch (AuraException) { }
         _output.WriteLine($"ApplicationCache: {UserDirectories.ApplicationCache}");
@@ -71,25 +71,19 @@ public class UserDirectoriesTest
     {
         try
         {
-            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests", "Aura Tests", "Test Aura library");
+            Aura.Init("org.nickvision.Aura.Tests", "Nickvision Aura Tests");
         }
         catch (AuraException) { }
         _output.WriteLine($"ApplicationLocalData: {UserDirectories.ApplicationLocalData}");
         Assert.True(Directory.Exists(UserDirectories.ApplicationLocalData));
     }
 
-    [Fact]
+    [SkippableFact]
     public void Runtime()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            _output.WriteLine($"Runtime: {UserDirectories.Runtime}");
-            Assert.True(Directory.Exists(UserDirectories.Runtime));
-        }
-        else
-        {
-            Assert.Throws<PlatformNotSupportedException>(() => Directory.Exists(UserDirectories.Runtime));
-        }
+        Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
+        _output.WriteLine($"Runtime: {UserDirectories.Runtime}");
+        Assert.True(Directory.Exists(UserDirectories.Runtime));
     }
 
     [Fact]
@@ -127,18 +121,12 @@ public class UserDirectoriesTest
         Assert.True(Directory.Exists(UserDirectories.Pictures));
     }
     
-    [Fact]
+    [SkippableFact]
     public void PublicShare()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            _output.WriteLine($"PublicShare: {UserDirectories.PublicShare}");
-            Assert.True(Directory.Exists(UserDirectories.PublicShare));
-        }
-        else
-        {
-            Assert.Throws<PlatformNotSupportedException>(() => Directory.Exists(UserDirectories.PublicShare));
-        }
+        Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
+        _output.WriteLine($"PublicShare: {UserDirectories.PublicShare}");
+        Assert.True(Directory.Exists(UserDirectories.PublicShare));
     }
     
     [Fact]

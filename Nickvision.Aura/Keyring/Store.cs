@@ -15,7 +15,7 @@ internal class Store : IDisposable
     /// <summary>
     /// The directory to store Stores
     /// </summary>
-    public static readonly string StoreDir = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{Path.DirectorySeparatorChar}Nickvision{Path.DirectorySeparatorChar}Keyring{Path.DirectorySeparatorChar}";
+    public static readonly string StoreDir = $"{UserDirectories.Config}{Path.DirectorySeparatorChar}Nickvision{Path.DirectorySeparatorChar}Keyring";
 
     private bool _disposed;
     private readonly SqliteConnection _database;
@@ -28,7 +28,7 @@ internal class Store : IDisposable
     /// <summary>
     /// The location of the Store on disk
     /// </summary>
-    public string Location => $"{StoreDir}{Name}.nring";
+    public string Location => $"{StoreDir}{Path.DirectorySeparatorChar}{Name}.nring";
 
     /// <summary>
     /// Constructs a Store
@@ -58,10 +58,7 @@ internal class Store : IDisposable
     /// <returns>The new Store object</returns>
     public static Store Create(string name, string password, bool overwrite)
     {
-        if(!Directory.Exists(StoreDir))
-        {
-            Directory.CreateDirectory(StoreDir);
-        }
+        Directory.CreateDirectory(StoreDir);
         if(string.IsNullOrEmpty(name))
         {
             throw new ArgumentException("The name to create a Store must not be empty.");
@@ -70,7 +67,7 @@ internal class Store : IDisposable
         {
             throw new ArgumentException("The password to create a Store must not be empty.");
         }
-        var path = $"{StoreDir}{name}.nring";
+        var path = $"{StoreDir}{Path.DirectorySeparatorChar}{name}.nring";
         if(File.Exists(path))
         {
             if(overwrite)
@@ -110,7 +107,7 @@ internal class Store : IDisposable
         {
             throw new ArgumentException("The password to create a Store must not be empty.");
         }
-        var path = $"{StoreDir}{name}.nring";
+        var path = $"{StoreDir}{Path.DirectorySeparatorChar}{name}.nring";
         if(!File.Exists(path))
         {
             throw new FileNotFoundException("A Store is not found with the provided name.");
@@ -136,7 +133,7 @@ internal class Store : IDisposable
     /// </summary>
     /// <param name="name">The name of the Store</param>
     /// <returns>True if exists, else false</returns>
-    public static bool Exists(string name) => File.Exists($"{StoreDir}{name}.nring");
+    public static bool Exists(string name) => File.Exists($"{StoreDir}{Path.DirectorySeparatorChar}{name}.nring");
 
     /// <summary>
     /// Destroys a Store by name
@@ -145,9 +142,9 @@ internal class Store : IDisposable
     /// <returns>True if destroyed, else false</returns>
     public static bool Destroy(string name)
     {
-        if (File.Exists($"{StoreDir}{name}.nring"))
+        if (File.Exists($"{StoreDir}{Path.DirectorySeparatorChar}{name}.nring"))
         {
-            File.Delete($"{StoreDir}{name}.nring");
+            File.Delete($"{StoreDir}{Path.DirectorySeparatorChar}{name}.nring");
             return true;
         }
         return false;

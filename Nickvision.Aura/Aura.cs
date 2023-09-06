@@ -25,16 +25,12 @@ public class Aura
     /// </summary>
     /// <param name="id">ID for AppInfo</param>
     /// <param name="name">Name for AppInfo</param>
-    /// <param name="shortName">ShortName for AppInfo</param>
-    /// <param name="description">Description for AppInfo</param>
-    private Aura(string id, string name, string shortName, string description)
+    private Aura(string id, string name)
     {
         AppInfo = new AppInfo()
         {
             ID = id,
-            Name = name,
-            ShortName = shortName,
-            Description = description
+            Name = name
         };
         ConfigFiles = new Dictionary<string, ConfigurationBase>();
     }
@@ -44,15 +40,13 @@ public class Aura
     /// </summary>
     /// <param name="id">ID for AppInfo</param>
     /// <param name="name">Name for AppInfo</param>
-    /// <param name="shortName">ShortName for AppInfo</param>
-    /// <param name="description">Description for AppInfo</param>
-    public static void Init(string id, string name, string shortName, string description)
+    public static void Init(string id, string name)
     {
         if (_instance != null)
         {
             throw new AuraException("Aura is already initialized.");
         }
-        _instance = new Aura(id, name, shortName, description);
+        _instance = new Aura(id, name);
     }
     
     /// <summary>

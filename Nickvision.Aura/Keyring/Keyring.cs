@@ -32,16 +32,46 @@ public class Keyring : IDisposable
     /// Accesses a Keyring. The Keyring will first attempt to load the Store. If the Store doesn't exist, it will create a new Store.
     /// </summary>
     /// <param name="name">The name of the Store</param>
-    /// <param name="password">The password of the Store</param>
+    /// <param name="password">The password of the Store, or null to use password from system's credential manager</param>
     /// <returns>The Keyring. If the Keyring exists and cannot be loaded, null will be returned</returns>
-    public static Keyring? Access(string name, string password)
+    /// <remarks>If password is null, Windows Credential Manager will be used on Windows or LibSecret will be used on
+    /// Linux to get password for the keyring. If a new Store will be created, it will be encrypted with random password.</remarks>
+    public static Keyring? Access(string name, string? password = null)
     {
+        password ??= SystemCredentialManager.GetPassword(name);
+        // If the password is not null, try to open the Store.
+        // -> If it fails because file not found, create new store with provided password.
+        // -> If it fails for any other reason, return null.
+        // If the password is null, try to create new Store with random password without overwriting. If it fails, return null.
+        if (password != null)
+        {
+            try
+            {
+                return new Keyring(Store.Load(name, password));
+            }
+            catch (FileNotFoundException)
+            {
+                try
+                {
+                    return new Keyring(Store.Create(name, password, false));
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
         try
         {
-            return new Keyring(Store.Load(name, password));
-        }
-        catch (FileNotFoundException)
-        {
+            password = SystemCredentialManager.SetPassword(name);
+            if (password == null)
+            {
+                return null;
+            }
             return new Keyring(Store.Create(name, password, false));
         }
         catch
@@ -62,7 +92,11 @@ public class Keyring : IDisposable
     /// </summary>
     /// <param name="name">The name of the Keyring</param>
     /// <returns>True if destroyed, else false</returns>
-    public static bool Destroy(string name) => Store.Destroy(name);
+    public static bool Destroy(string name)
+    {
+        SystemCredentialManager.DeletePassword(name);
+        return Store.Destroy(name);
+    }
 
     /// <summary>
     /// Frees resources used by the Keyring object
