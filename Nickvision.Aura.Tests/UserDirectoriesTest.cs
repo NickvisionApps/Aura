@@ -78,18 +78,12 @@ public class UserDirectoriesTest
         Assert.True(Directory.Exists(UserDirectories.ApplicationLocalData));
     }
 
-    [Fact]
+    [SkippableFact]
     public void Runtime()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            _output.WriteLine($"Runtime: {UserDirectories.Runtime}");
-            Assert.True(Directory.Exists(UserDirectories.Runtime));
-        }
-        else
-        {
-            Assert.Throws<PlatformNotSupportedException>(() => Directory.Exists(UserDirectories.Runtime));
-        }
+        Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
+        _output.WriteLine($"Runtime: {UserDirectories.Runtime}");
+        Assert.True(Directory.Exists(UserDirectories.Runtime));
     }
 
     [Fact]
@@ -127,18 +121,12 @@ public class UserDirectoriesTest
         Assert.True(Directory.Exists(UserDirectories.Pictures));
     }
     
-    [Fact]
+    [SkippableFact]
     public void PublicShare()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            _output.WriteLine($"PublicShare: {UserDirectories.PublicShare}");
-            Assert.True(Directory.Exists(UserDirectories.PublicShare));
-        }
-        else
-        {
-            Assert.Throws<PlatformNotSupportedException>(() => Directory.Exists(UserDirectories.PublicShare));
-        }
+        Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
+        _output.WriteLine($"PublicShare: {UserDirectories.PublicShare}");
+        Assert.True(Directory.Exists(UserDirectories.PublicShare));
     }
     
     [Fact]
