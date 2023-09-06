@@ -29,7 +29,7 @@ public static partial class SystemCredentialManager
     /// Get keyring's password from credential manager
     /// </summary>
     /// <param name="name">Keyring name</param>
-    /// <returns>Keyring password or null</returns>
+    /// <returns>Keyring password or null if failed to get password</returns>
     public static string? GetPassword(string name)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -50,8 +50,8 @@ public static partial class SystemCredentialManager
     /// Set random password for a keyring in credential manager
     /// </summary>
     /// <param name="name">Keyring name</param>
-    /// <returns>Keyring password or null</returns>
-    public static string SetPassword(string name)
+    /// <returns>Keyring password or null if failed to set password</returns>
+    public static string? SetPassword(string name)
     {
         var password = new PasswordGenerator().Next();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -66,7 +66,7 @@ public static partial class SystemCredentialManager
             secret_schema_unref(schema);
             if (!success)
             {
-                throw new Exception();
+                return null;
             }
             return password;
         }

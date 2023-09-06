@@ -68,6 +68,10 @@ public class Keyring : IDisposable
         try
         {
             password = SystemCredentialManager.SetPassword(name);
+            if (password == null)
+            {
+                return null;
+            }
             return new Keyring(Store.Create(name, password, false));
         }
         catch
