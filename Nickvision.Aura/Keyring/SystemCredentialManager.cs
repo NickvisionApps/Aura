@@ -91,7 +91,13 @@ internal static class SystemCredentialManager
         throw new PlatformNotSupportedException();
     }
 
-    private static async Task<Item[]> GetDBusKeyringItems(string name)
+    /// <summary>
+    /// Gets items from DBus Secret Service Keyring
+    /// </summary>
+    /// <param name="attribute">Attribute value to search for</param>
+    /// <returns>Items Array</returns>
+    /// <remarks>It is possible for multiple items with the same attribute to exist</remarks>
+    private static async Task<Item[]> GetDBusKeyringItems(string attribute)
     {
         if (_service == null)
         {
@@ -103,7 +109,7 @@ internal static class SystemCredentialManager
             throw new AuraException("Failed to get or create default collection in system keyring.");
         }
         await _collection.UnlockAsync();
-        var lookupAttributes = new Dictionary<string, string> {{ "application", name.ToLower() }};
+        var lookupAttributes = new Dictionary<string, string> {{ "application", attribute.ToLower() }};
         return await _collection.SearchItemsAsync(lookupAttributes);
     }
 }
