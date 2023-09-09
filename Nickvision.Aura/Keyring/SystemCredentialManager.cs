@@ -30,18 +30,7 @@ internal static class SystemCredentialManager
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            if (_service == null)
-            {
-                _service = await SecretService.ConnectAsync(EncryptionType.Dh);
-                _collection = await _service.GetDefaultCollectionAsync() ?? await _service.CreateCollectionAsync("Default keyring", "default");
-            }
-            if (_collection == null)
-            {
-                throw new AuraException("[AURA] Failed to get or create default collection in system keyring.");
-            }
-            await _collection.UnlockAsync();
-            var lookupAttributes = new Dictionary<string, string> {{ "application", name.ToLower() }};
-            var items = await _collection.SearchItemsAsync(lookupAttributes);
+            var items = await GetDBusKeyringItems(name);
             if (items.Length > 0)
             {
                 return Encoding.UTF8.GetString(await items[0].GetSecretAsync());
@@ -66,24 +55,14 @@ internal static class SystemCredentialManager
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            if (_service == null)
-            {
-                _service = await SecretService.ConnectAsync(EncryptionType.Dh);
-                _collection = await _service.GetDefaultCollectionAsync() ?? await _service.CreateCollectionAsync("Default keyring", "default");
-            }
-            if (_collection == null)
-            {
-                throw new AuraException("[AURA] Failed to get or create default collection in system keyring.");
-            }
-            await _collection.UnlockAsync();
-            var lookupAttributes = new Dictionary<string, string> {{ "application", name.ToLower() }};
-            var items = await _collection.SearchItemsAsync(lookupAttributes);
+            var items = await GetDBusKeyringItems(name);
             if (items.Length > 0)
             {
                 await items[0].SetSecret(Encoding.UTF8.GetBytes(password), "text/plain; charset=utf8");
                 return password;
             }
-            await _collection.CreateItemAsync(name, lookupAttributes, Encoding.UTF8.GetBytes(password), "text/plain; charset=utf8", false);
+            var lookupAttributes = new Dictionary<string, string> {{ "application", name.ToLower() }};
+            await _collection!.CreateItemAsync(name, lookupAttributes, Encoding.UTF8.GetBytes(password), "text/plain; charset=utf8", false);
             return password;
         }
         throw new PlatformNotSupportedException();
@@ -102,24 +81,29 @@ internal static class SystemCredentialManager
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            if (_service == null)
-            {
-                _service = await SecretService.ConnectAsync(EncryptionType.Dh);
-                _collection = await _service.GetDefaultCollectionAsync() ?? await _service.CreateCollectionAsync("Default keyring", "default");
-            }
-            if (_collection == null)
-            {
-                throw new AuraException("[AURA] Failed to get or create default collection in system keyring.");
-            }
-            await _collection.UnlockAsync();
-            var lookupAttributes = new Dictionary<string, string> {{ "application", name.ToLower() }};
-            var items = await _collection.SearchItemsAsync(lookupAttributes);
+            var items = await GetDBusKeyringItems(name);
             if (items.Length > 0)
             {
-                //await items[0].SetSecret(Array.Empty<byte>(), "text/plain; charset=utf8");
+                await items[0].SetSecret(Array.Empty<byte>(), "text/plain; charset=utf8");
             }
             return;
         }
         throw new PlatformNotSupportedException();
+    }
+
+    private static async Task<Item[]> GetDBusKeyringItems(string name)
+    {
+        if (_service == null)
+        {
+            _service = await SecretService.ConnectAsync(EncryptionType.Dh);
+            _collection = await _service.GetDefaultCollectionAsync() ?? await _service.CreateCollectionAsync("Default keyring", "default");
+        }
+        if (_collection == null)
+        {
+            throw new AuraException("Failed to get or create default collection in system keyring.");
+        }
+        await _collection.UnlockAsync();
+        var lookupAttributes = new Dictionary<string, string> {{ "application", name.ToLower() }};
+        return await _collection.SearchItemsAsync(lookupAttributes);
     }
 }
