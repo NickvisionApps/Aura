@@ -120,7 +120,7 @@ internal class Store : IDisposable
                 Mode = SqliteOpenMode.ReadWrite,
                 Pooling = false,
                 Password = password
-            }.ConnectionString));            
+            }.ConnectionString));
         }
         catch
         {

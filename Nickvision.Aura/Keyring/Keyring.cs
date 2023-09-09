@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,16 +35,23 @@ public class Keyring : IDisposable
     /// <param name="name">The name of the Store</param>
     /// <param name="password">The password of the Store, or null to use password from system's credential manager</param>
     /// <returns>The Keyring. If the Keyring exists and cannot be loaded, null will be returned</returns>
-    /// <remarks>If password is null, Windows Credential Manager will be used on Windows or LibSecret will be used on
+    /// <remarks>If password is null, Windows Credential Manager will be used on Windows or DBus Secret Service will be used on
     /// Linux to get password for the keyring. If a new Store will be created, it will be encrypted with random password.</remarks>
-    public static Keyring? Access(string name, string? password = null)
+    public static async Task<Keyring?> AccessAsync(string name, string? password = null)
     {
-        password ??= SystemCredentialManager.GetPassword(name);
-        // If the password is not null, try to open the Store.
+        try
+        {
+            password ??= await SystemCredentialManager.GetPasswordAsync(name);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        // If the password is not null or empty, try to open the Store.
         // -> If it fails because file not found, create new store with provided password.
         // -> If it fails for any other reason, return null.
         // If the password is null, try to create new Store with random password without overwriting. If it fails, return null.
-        if (password != null)
+        if (!string.IsNullOrEmpty(password))
         {
             try
             {
@@ -55,27 +63,30 @@ public class Keyring : IDisposable
                 {
                     return new Keyring(Store.Create(name, password, false));
                 }
-                catch
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return null;
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return null;
             }
         }
         try
         {
-            password = SystemCredentialManager.SetPassword(name);
+            password = await SystemCredentialManager.SetPasswordAsync(name);
             if (password == null)
             {
                 return null;
             }
             return new Keyring(Store.Create(name, password, false));
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             return null;
         }
     }
@@ -92,9 +103,9 @@ public class Keyring : IDisposable
     /// </summary>
     /// <param name="name">The name of the Keyring</param>
     /// <returns>True if destroyed, else false</returns>
-    public static bool Destroy(string name)
+    public static async Task<bool> DestroyAsync(string name)
     {
-        SystemCredentialManager.DeletePassword(name);
+        await SystemCredentialManager.DeletePasswordAsync(name);
         return Store.Destroy(name);
     }
 
@@ -127,10 +138,18 @@ public class Keyring : IDisposable
     /// Destroys the Keyring and all its data, including the store. Once this method is called, this object should not be used anymore.
     /// </summary>
     /// <returns>True if successful, else false</returns>
-    public bool Destroy()
+    public async Task<bool> DestroyAsync()
     {
         if(_store.Destroy())
         {
+            try
+            {
+                await SystemCredentialManager.DeletePasswordAsync(Name);
+            }
+            catch
+            {
+                Console.WriteLine("[AURA] Failed to remove password from system keyring.");
+            }
             Dispose();
             return true;
         }

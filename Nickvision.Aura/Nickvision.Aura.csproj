@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageId>Nickvision.Aura</PackageId>
     <Version>2023.9.2</Version>
     <Company>Nickvision</Company>
@@ -20,6 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ace4896.DBus.Services.Secrets" Version="1.1.0" />
     <PackageReference Include="Markdig" Version="0.31.0" />
     <PackageReference Include="Meziantou.Framework.Win32.CredentialManager" Version="1.4.2" />
     <PackageReference Include="Tmds.DBus" Version="0.15.0" />
