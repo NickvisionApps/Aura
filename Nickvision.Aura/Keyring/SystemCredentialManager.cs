@@ -30,7 +30,7 @@ internal static class SystemCredentialManager
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            var items = await GetDBusKeyringItems(name);
+            var items = await GetDBusKeyringItemsAsync(name);
             if (items.Length > 0)
             {
                 return Encoding.UTF8.GetString(await items[0].GetSecretAsync());
@@ -55,7 +55,7 @@ internal static class SystemCredentialManager
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            var items = await GetDBusKeyringItems(name);
+            var items = await GetDBusKeyringItemsAsync(name);
             if (items.Length > 0)
             {
                 await items[0].SetSecret(Encoding.UTF8.GetBytes(password), "text/plain; charset=utf8");
@@ -81,7 +81,7 @@ internal static class SystemCredentialManager
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            var items = await GetDBusKeyringItems(name);
+            var items = await GetDBusKeyringItemsAsync(name);
             if (items.Length > 0)
             {
                 await items[0].SetSecret(Array.Empty<byte>(), "text/plain; charset=utf8");
@@ -97,7 +97,7 @@ internal static class SystemCredentialManager
     /// <param name="attribute">Attribute value to search for</param>
     /// <returns>Items Array</returns>
     /// <remarks>It is possible for multiple items with the same attribute to exist</remarks>
-    private static async Task<Item[]> GetDBusKeyringItems(string attribute)
+    private static async Task<Item[]> GetDBusKeyringItemsAsync(string attribute)
     {
         if (_service == null)
         {
