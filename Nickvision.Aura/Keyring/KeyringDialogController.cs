@@ -62,11 +62,11 @@ public class KeyringDialogController
     /// Enables the Keyring
     /// </summary>
     /// <returns>True if successful, false is Keyring already enabled or error</returns>
-    public bool EnableKeyring(string? password = null)
+    public async Task<bool> EnableKeyringAsync(string? password = null)
     {
         if(Keyring == null)
         {
-            Keyring = Keyring.Access(_keyringName, password);
+            Keyring = await Keyring.AccessAsync(_keyringName, password);
             return Keyring != null;
         }
         return false;
@@ -76,11 +76,11 @@ public class KeyringDialogController
     /// Disables the Keyring and destroys its data
     /// </summary>
     /// <returns>True if successful, false if Keyring already disabled</returns>
-    public bool DisableKeyring()
+    public async Task<bool> DisableKeyringAsync()
     {
         if(Keyring != null)
         {
-            Keyring.Destroy();
+            await Keyring.DestroyAsync();
             Keyring = null;
             return true;
         }
@@ -92,11 +92,11 @@ public class KeyringDialogController
     /// </summary>
     /// <returns>True if successful, false if Keyring doesn't exist or is unlocked</returns>
     /// <remarks>Can only be used if the Keyring is not unlocked. If unlocked, use DisableKeyring()</remarks>
-    public bool ResetKeyring()
+    public async Task<bool> ResetKeyringAsync()
     {
         if (Keyring == null)
         {
-            return Keyring.Destroy(_keyringName);
+            return await Keyring.DestroyAsync(_keyringName);
         }
         return false;
     }

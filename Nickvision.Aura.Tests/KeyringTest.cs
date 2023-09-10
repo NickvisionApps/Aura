@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace Nickvision.Aura.Tests;
@@ -12,15 +13,22 @@ public class KeyringTest
     }
     
     [SkippableFact]
-    public void AccessTest()
+    public async Task AccessTest()
     {
-        var keyring = Keyring.Keyring.Access("org.nickvision.aura.test");
-        // We want the test to succeed when running locally but skip on GitHub where libsecret keyring is locked
+        var keyring = await Keyring.Keyring.AccessAsync("org.nickvision.aura.test");
+        // We want the test to succeed when running locally but skip on GitHub where system keyring is locked
         Skip.If(keyring == null);
-        keyring.Destroy();
-        keyring.Dispose();
+        await keyring.DestroyAsync();
     }
-    
+
+    [Fact]
+    public async Task AccessWithPasswordTest()
+    {
+        var keyring = await Keyring.Keyring.AccessAsync("org.nickvision.aura.test", "TEST");
+        Assert.True(keyring != null);
+        await keyring.DestroyAsync();
+    }
+
     [Theory]
     [InlineData(4)]
     [InlineData(16)]

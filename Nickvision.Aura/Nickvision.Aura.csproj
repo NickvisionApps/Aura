@@ -3,9 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageId>Nickvision.Aura</PackageId>
-    <Version>2023.9.2</Version>
+    <Version>2023.9.3</Version>
     <Company>Nickvision</Company>
     <Authors>Nickvision</Authors>
     <Description>A cross-platform base for Nickvision applications</Description>
@@ -14,12 +13,15 @@
     <Copyright>(c) Nickvision 2021-2023</Copyright>
     <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
-    <PackageReleaseNotes>- Allow Keyring to use system secrets for password
-    - AppInfo's ShortName and Description are now optional</PackageReleaseNotes>
+    <PackageReleaseNotes>- Some Keyring methods are now async
+    - Keyring doesn't need libsecret on Linux anymore
+    </PackageReleaseNotes>
     <PackageIcon>logo-r.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ace4896.DBus.Services.Secrets" Version="1.1.0" />
     <PackageReference Include="Markdig" Version="0.31.0" />
     <PackageReference Include="Meziantou.Framework.Win32.CredentialManager" Version="1.4.2" />
     <PackageReference Include="Tmds.DBus" Version="0.15.0" />
@@ -28,7 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-      <None Include="Resources\logo-r.png" Pack="true" PackagePath="\" />
+    <None Include="Resources\logo-r.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
     
 </Project>

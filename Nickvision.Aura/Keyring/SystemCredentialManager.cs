@@ -1,36 +1,28 @@
+using DBus.Services.Secrets;
 using Meziantou.Framework.Win32;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Nickvision.Aura.Keyring;
 
 /// <summary>
 /// Object to access system credential manager
 /// </summary>
-/// <remarks>Uses Windows Credential Manager on Windows and LibSecret on Linux</remarks>
-internal static partial class SystemCredentialManager
+/// <remarks>Uses Windows Credential Manager on Windows and DBus Secret Service on Linux</remarks>
+internal static class SystemCredentialManager
 {
-    [LibraryImport("libsecret-1.so.0", StringMarshalling = StringMarshalling.Utf8)]
-    private static partial nint secret_schema_new(string name, int flags, nint args);
-    [LibraryImport("libsecret-1.so.0", StringMarshalling = StringMarshalling.Utf8)]
-    private static partial string secret_password_lookup_sync(nint schema, nint cancellable, nint error, nint args);
-    [LibraryImport("libsecret-1.so.0", StringMarshalling = StringMarshalling.Utf8)]
-    [return:MarshalAs(UnmanagedType.I1)]
-    private static partial bool secret_password_store_sync(nint schema, nint collection, string label, string password, nint cancellable, nint error, nint args);
-    [LibraryImport("libsecret-1.so.0", StringMarshalling = StringMarshalling.Utf8)]
-    [return:MarshalAs(UnmanagedType.I1)]
-    private static partial bool secret_password_clear_sync(nint schema, nint cancellable, nint error, nint args);
-    [LibraryImport("libsecret-1.so.0")]
-    private static partial void secret_schema_unref(nint schema);
-
-    private const int SECRET_SCHEMA_NONE = 0;
+    private static SecretService? _service;
+    private static Collection? _collection;
 
     /// <summary>
     /// Gets keyring's password from credential manager
     /// </summary>
     /// <param name="name">Keyring name</param>
     /// <returns>Keyring password or null if failed to get password</returns>
-    public static string? GetPassword(string name)
+    public static async Task<string?> GetPasswordAsync(string name)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
@@ -38,10 +30,12 @@ internal static partial class SystemCredentialManager
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            var schema = secret_schema_new(name, SECRET_SCHEMA_NONE, IntPtr.Zero);
-            var password = secret_password_lookup_sync(schema, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-            secret_schema_unref(schema);
-            return password;
+            var items = await GetDBusKeyringItemsAsync(name);
+            if (items.Length > 0)
+            {
+                return Encoding.UTF8.GetString(await items[0].GetSecretAsync());
+            }
+            return null;
         }
         throw new PlatformNotSupportedException();
     }
@@ -51,7 +45,7 @@ internal static partial class SystemCredentialManager
     /// </summary>
     /// <param name="name">Keyring name</param>
     /// <returns>Keyring password or null if failed to set password</returns>
-    public static string? SetPassword(string name)
+    public static async Task<string?> SetPasswordAsync(string name)
     {
         var password = new PasswordGenerator().Next();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -61,13 +55,14 @@ internal static partial class SystemCredentialManager
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            var schema = secret_schema_new(name, SECRET_SCHEMA_NONE, IntPtr.Zero);
-            var success = secret_password_store_sync(schema, IntPtr.Zero, name, password, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-            secret_schema_unref(schema);
-            if (!success)
+            var items = await GetDBusKeyringItemsAsync(name);
+            if (items.Length > 0)
             {
-                return null;
+                await items[0].SetSecret(Encoding.UTF8.GetBytes(password), "text/plain; charset=utf8");
+                return password;
             }
+            var lookupAttributes = new Dictionary<string, string> {{ "application", name.ToLower() }};
+            await _collection!.CreateItemAsync(name, lookupAttributes, Encoding.UTF8.GetBytes(password), "text/plain; charset=utf8", false);
             return password;
         }
         throw new PlatformNotSupportedException();
@@ -77,7 +72,7 @@ internal static partial class SystemCredentialManager
     /// Deletes keyring's password from credential manager
     /// </summary>
     /// <param name="name">Keyring name</param>
-    public static void DeletePassword(string name)
+    public static async Task DeletePasswordAsync(string name)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
@@ -86,11 +81,35 @@ internal static partial class SystemCredentialManager
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            var schema = secret_schema_new(name, SECRET_SCHEMA_NONE, IntPtr.Zero);
-            secret_password_clear_sync(schema, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-            secret_schema_unref(schema);
+            var items = await GetDBusKeyringItemsAsync(name);
+            if (items.Length > 0)
+            {
+                await items[0].SetSecret(Array.Empty<byte>(), "text/plain; charset=utf8");
+            }
             return;
         }
         throw new PlatformNotSupportedException();
+    }
+
+    /// <summary>
+    /// Gets items from DBus Secret Service Keyring
+    /// </summary>
+    /// <param name="attribute">Attribute value to search for</param>
+    /// <returns>Items Array</returns>
+    /// <remarks>It is possible for multiple items with the same attribute to exist</remarks>
+    private static async Task<Item[]> GetDBusKeyringItemsAsync(string attribute)
+    {
+        if (_service == null)
+        {
+            _service = await SecretService.ConnectAsync(EncryptionType.Dh);
+            _collection = await _service.GetDefaultCollectionAsync() ?? await _service.CreateCollectionAsync("Default keyring", "default");
+        }
+        if (_collection == null)
+        {
+            throw new AuraException("Failed to get or create default collection in system keyring.");
+        }
+        await _collection.UnlockAsync();
+        var lookupAttributes = new Dictionary<string, string> {{ "application", attribute.ToLower() }};
+        return await _collection.SearchItemsAsync(lookupAttributes);
     }
 }
