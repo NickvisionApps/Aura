@@ -171,4 +171,28 @@ public class TaskbarItem : IDisposable
             TaskbarFlash.Change(_hwnd, urgent);
         }
     }
+    
+    /// <summary>
+    /// Sets counter state (Linux-only)
+    /// </summary>
+    /// <param name="state">True if visible, else false</param>
+    public void SetCountState(bool state)
+    {
+        if (_unityLauncher != null)
+        {
+            _unityLauncher.CountVisible = state;
+        }
+    }
+    
+    /// <summary>
+    /// Sets counter value (Linux-only)
+    /// </summary>
+    /// <param name="count">Counter value</param>
+    public void SetCountValue(int count)
+    {
+        if (_unityLauncher != null)
+        {
+            _unityLauncher.Count = count;
+        }
+    }
 }
