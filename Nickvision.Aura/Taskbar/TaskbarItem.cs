@@ -118,10 +118,28 @@ public class TaskbarItem : IDisposable
     }
     
     /// <summary>
+    /// Sets progress bar state
+    /// </summary>
+    /// <param name="state">Progress bar state flag</param>
+    /// <remarks>On Linux, Indeterminate is the same as NoProgress, and Error and Paused are the same as Normal</remarks>
+    public void SetProgressState(ProgressFlags state)
+    {
+        if (_unityLauncher != null)
+        {
+            _unityLauncher.ProgressVisible = state >= ProgressFlags.Normal;
+        }
+        else if (_taskbarList != null)
+        {
+            _taskbarList.SetProgressState(_hwnd, state);
+        }
+    }
+    
+    /// <summary>
     /// Sets progress bar value
     /// </summary>
     /// <param name="progress">A number between 0 and 1</param>
-    public void SetProgress(double progress)
+    /// <remarks>Changing progress bar value automatically sets progress state to normal</remarks>
+    public void SetProgressValue(double progress)
     {
         if (_unityLauncher != null)
         {
@@ -131,7 +149,7 @@ public class TaskbarItem : IDisposable
                 _unityLauncher.ProgressVisible = true;
             }
         }
-        if (_taskbarList != null)
+        else if (_taskbarList != null)
         {
             _taskbarList.SetProgressState(_hwnd, ProgressFlags.Normal);
             _taskbarList.SetProgressValue(_hwnd, (ulong)(progress * 100), 100u);
@@ -139,14 +157,18 @@ public class TaskbarItem : IDisposable
     }
     
     /// <summary>
-    /// Tells the launcher to get the user's attention
+    /// Sets the urgent state that tells the taskbar item to get the user's attention
     /// </summary>
-    /// <param name="urgent">Whether to enable urgent state</param>
+    /// <param name="urgent">True to set urgent state, else false</param>
     public void SetUrgent(bool urgent)
     {
         if (_unityLauncher != null)
         {
             _unityLauncher.Urgent = urgent;
+        }
+        else if (_taskbarList != null)
+        {
+            TaskbarFlash.Change(_hwnd, urgent);
         }
     }
 }
