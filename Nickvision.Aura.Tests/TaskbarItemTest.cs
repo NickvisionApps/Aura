@@ -1,14 +1,15 @@
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Xunit.Abstractions;
 
 namespace Nickvision.Aura.Tests;
 
 public class TaskbarItemTest
 {
-    [Fact]
+    [SkippableFact]
     public async Task ConnectTest()
     {
-        using var t = await Taskbar.TaskbarItem.Connect("test.desktop");
+        Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
+        using var t = await Taskbar.TaskbarItem.ConnectAsync("test.desktop");
         Assert.NotNull(t);
     }
 }
