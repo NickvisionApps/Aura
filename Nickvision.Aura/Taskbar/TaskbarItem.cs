@@ -13,14 +13,24 @@ public class TaskbarItem : IDisposable
     private bool _disposed;
     private Connection? _dbusConnection;
     private readonly LauncherEntry? _unityLauncher;
+    private readonly nint _hwnd;
+    private readonly ITaskbarList3? _taskbarList;
     
     /// <summary>
-    /// Constructs TaskbarItem
+    /// Constructs TaskbarItem for Linux
     /// </summary>
+    /// <param name="desktopFile">Desktop file name with extension</param>
     private TaskbarItem(string desktopFile)
     {
         _unityLauncher = new LauncherEntry(desktopFile);
         _disposed = false;
+    }
+    
+    private TaskbarItem(nint hwnd)
+    {
+        _hwnd = hwnd;
+        _taskbarList = (ITaskbarList3)new CTaskbarList();
+        _taskbarList.HrInit();
     }
 
     /// <summary>
@@ -57,11 +67,11 @@ public class TaskbarItem : IDisposable
     }
     
     /// <summary>
-    /// Connects to an item on the taskbar
+    /// Connects to an item on the taskbar on Linux
     /// </summary>
-    /// <param name="desktopFile">Desktop file name including extension</param>
+    /// <param name="desktopFile">Desktop file name with extension</param>
     /// <exception cref="PlatformNotSupportedException">Thrown if called not on Linux</exception>
-    public static async Task<TaskbarItem?> Connect(string desktopFile)
+    public static async Task<TaskbarItem?> ConnectAsync(string desktopFile)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
@@ -74,6 +84,32 @@ public class TaskbarItem : IDisposable
             await t._dbusConnection.ConnectAsync();
             await t._dbusConnection.RegisterObjectAsync(t._unityLauncher);
             return t;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Connects to an item on the taskbar on Windows
+    /// </summary>
+    /// <param name="hwnd">Window handle</param>
+    /// <exception cref="PlatformNotSupportedException">Thrown if called not on Windows</exception>
+    /// <exception cref="ArgumentException">Thrown if hwnd is IntPtr.Zero</exception>
+    public static TaskbarItem? Connect(nint hwnd)
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            throw new PlatformNotSupportedException();
+        }
+        if (hwnd == IntPtr.Zero)
+        {
+            throw new ArgumentException();
+        }
+        try
+        {
+            return new TaskbarItem(hwnd);
         }
         catch
         {
@@ -94,6 +130,11 @@ public class TaskbarItem : IDisposable
             {
                 _unityLauncher.ProgressVisible = true;
             }
+        }
+        if (_taskbarList != null)
+        {
+            _taskbarList.SetProgressState(_hwnd, ProgressFlags.Normal);
+            _taskbarList.SetProgressValue(_hwnd, (ulong)(progress * 100), 100u);
         }
     }
     
