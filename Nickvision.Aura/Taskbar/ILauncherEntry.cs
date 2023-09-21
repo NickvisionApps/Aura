@@ -12,5 +12,5 @@ namespace Nickvision.Aura.Taskbar;
 internal interface ILauncherEntry : IDBusObject
 {
     Task<IDisposable> WatchUpdateAsync(Action<(string appUri, IDictionary<string, object> properties)> handler);
-    Task<LauncherProperties> QueryAsync();
+    Task<IDictionary<string, object>> QueryAsync();
 }

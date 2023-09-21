@@ -11,7 +11,7 @@ namespace Nickvision.Aura.Taskbar;
 internal class LauncherEntry : ILauncherEntry
 {
     private readonly string _appUri;
-    private readonly LauncherProperties _properties;
+    private readonly Dictionary<string, object> _properties;
     
     /// <summary>
     /// DBus object path
@@ -23,12 +23,12 @@ internal class LauncherEntry : ILauncherEntry
     /// </summary>
     public int Count
     {
-        get => _properties.Count;
+        get => (int)_properties["count"];
         
         set
         {
-            _properties.Count = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"count", _properties.Count} }));
+            _properties["count"] = value;
+            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"count", _properties["count"]} }));
         }
     }
 
@@ -37,12 +37,12 @@ internal class LauncherEntry : ILauncherEntry
     /// </summary>
     public bool CountVisible
     {
-        get => _properties.CountVisible;
+        get => (bool)_properties["count-visible"];
     
         set
         {
-            _properties.CountVisible = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"count-visible", _properties.CountVisible} }));
+            _properties["count-visible"] = value;
+            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"count-visible", _properties["count-visible"]} }));
         }
     }
 
@@ -52,12 +52,12 @@ internal class LauncherEntry : ILauncherEntry
     /// <remarks>A number between 0 and 1</remarks>
     public double Progress
     {
-        get => _properties.Progress;
+        get => (double)_properties["progress"];
     
         set
         {
-            _properties.Progress = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"progress", _properties.Progress} }));
+            _properties["progress"] = value;
+            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"progress", _properties["progress"]} }));
         }
     }
 
@@ -66,12 +66,12 @@ internal class LauncherEntry : ILauncherEntry
     /// </summary>
     public bool ProgressVisible
     {
-        get => _properties.ProgressVisible;
+        get => (bool)_properties["progress-visible"];
     
         set
         {
-            _properties.ProgressVisible = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"progress-visible", _properties.ProgressVisible} }));
+            _properties["progress-visible"] = value;
+            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"progress-visible", _properties["progress-visible"]} }));
         }
     }
 
@@ -80,12 +80,12 @@ internal class LauncherEntry : ILauncherEntry
     /// </summary>
     public bool Urgent
     {
-        get => _properties.Urgent;
+        get => (bool)_properties["urgent"];
 
         set
         {
-            _properties.Urgent = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"urgent", _properties.Urgent} }));
+            _properties["urgent"] = value;
+            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"urgent", _properties["urgent"]} }));
         }
     }
     
@@ -104,7 +104,7 @@ internal class LauncherEntry : ILauncherEntry
             hash = hash * 33 + (byte)c;
         }
         ObjectPath = $"/com/canonical/unity/launcherentry/{hash}";
-        _properties = new LauncherProperties();
+        _properties = new Dictionary<string, object>();
     }
     
     /// <summary>
@@ -119,5 +119,5 @@ internal class LauncherEntry : ILauncherEntry
     /// <summary>
     /// Returns result in Query DBus method call
     /// </summary>
-    public Task<LauncherProperties> QueryAsync() => Task.FromResult(_properties);
+    public Task<IDictionary<string, object>> QueryAsync() => Task.FromResult((IDictionary<string, object>)_properties);
 }
