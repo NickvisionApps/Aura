@@ -1,40 +1,40 @@
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
-using Xunit.Abstractions;
 
 namespace Nickvision.Aura.Tests;
 
 public class SystemDirectoriesTest
 {
-    private readonly ITestOutputHelper _output;
-
-    public SystemDirectoriesTest(ITestOutputHelper output)
-    {
-        _output = output;
-    }
-
     [Fact]
     public void Path()
     {
-        _output.WriteLine($"Path: {string.Join(", ", SystemDirectories.Path)}");
-        Assert.True(SystemDirectories.Path.Length > 0);
+        var path = new []{ "test0", "test1" };
+        Environment.SetEnvironmentVariable("PATH", string.Join(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ";" : ":", path));
+        Assert.True(SystemDirectories.Path.SequenceEqual(path));
     }
 
-    [SkippableFact]
+    [Fact]
     public void Config()
     {
-        Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
-        Skip.IfNot(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")));
-        _output.WriteLine($"Config: {string.Join(", ", SystemDirectories.Config)}");
-        Assert.True(SystemDirectories.Config.Length > 0);
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            Assert.True(SystemDirectories.Config.Length == 0);
+        }
+        var config = new []{ "test0", "test1" };
+        Environment.SetEnvironmentVariable("XDG_CONFIG_DIRS", string.Join(":", config));
+        Assert.True(SystemDirectories.Config.SequenceEqual(config));
     }
 
-    [SkippableFact]
+    [Fact]
     public void Data()
     {
-        Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
-        Skip.IfNot(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")));
-        _output.WriteLine($"Data: {string.Join(", ", SystemDirectories.Data)}");
-        Assert.True(SystemDirectories.Data.Length > 0);
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            Assert.True(SystemDirectories.Data.Length == 0);
+        }
+        var data = new []{ "test0", "test1" };
+        Environment.SetEnvironmentVariable("XDG_DATA_DIRS", string.Join(":", data));
+        Assert.True(SystemDirectories.Data.SequenceEqual(data));
     }
 }
