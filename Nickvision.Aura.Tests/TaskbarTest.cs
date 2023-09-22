@@ -11,7 +11,7 @@ public class TaskbarTest
     {
         Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
         Skip.IfNot(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")));
-        using var t = await Taskbar.TaskbarItem.ConnectAsync("test.desktop");
+        using var t = await Taskbar.TaskbarItem.ConnectLinuxAsync("test.desktop");
         Assert.NotNull(t);
     }
 }

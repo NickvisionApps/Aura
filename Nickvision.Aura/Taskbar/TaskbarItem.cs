@@ -25,7 +25,11 @@ public class TaskbarItem : IDisposable
         _unityLauncher = new LauncherEntry(desktopFile);
         _disposed = false;
     }
-    
+
+    /// <summary>
+    /// Constructs TaskbarItem for Windows
+    /// </summary>
+    /// <param name="hwnd">Window handle</param>
     private TaskbarItem(nint hwnd)
     {
         _hwnd = hwnd;
@@ -71,7 +75,7 @@ public class TaskbarItem : IDisposable
     /// </summary>
     /// <param name="desktopFile">Desktop file name with extension</param>
     /// <exception cref="PlatformNotSupportedException">Thrown if called not on Linux</exception>
-    public static async Task<TaskbarItem?> ConnectAsync(string desktopFile)
+    public static async Task<TaskbarItem?> ConnectLinuxAsync(string desktopFile)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
@@ -97,7 +101,7 @@ public class TaskbarItem : IDisposable
     /// <param name="hwnd">Window handle</param>
     /// <exception cref="PlatformNotSupportedException">Thrown if called not on Windows</exception>
     /// <exception cref="ArgumentException">Thrown if hwnd is IntPtr.Zero</exception>
-    public static TaskbarItem? Connect(nint hwnd)
+    public static TaskbarItem? ConnectWindows(nint hwnd)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
