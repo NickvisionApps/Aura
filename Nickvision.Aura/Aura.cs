@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Tmds.DBus;
+
+[assembly: InternalsVisibleTo(Connection.DynamicAssemblyName)]
 
 namespace Nickvision.Aura;
 
