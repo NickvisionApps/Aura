@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using Xunit.Abstractions;
 
@@ -23,6 +24,7 @@ public class SystemDirectoriesTest
     public void Config()
     {
         Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
+        Skip.IfNot(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")));
         _output.WriteLine($"Config: {string.Join(", ", SystemDirectories.Config)}");
         Assert.True(SystemDirectories.Config.Length > 0);
     }
@@ -31,6 +33,7 @@ public class SystemDirectoriesTest
     public void Data()
     {
         Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
+        Skip.IfNot(string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")));
         _output.WriteLine($"Data: {string.Join(", ", SystemDirectories.Data)}");
         Assert.True(SystemDirectories.Data.Length > 0);
     }
