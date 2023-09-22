@@ -27,14 +27,14 @@ public class SystemDirectories {
     /// <summary>
     /// Array of paths from XDG_CONFIG_DIRS
     /// </summary>
-    /// <exception cref="PlatformNotSupportedException">Thrown if used not on Linux</exception>
+    /// <remarks>Returns empty array when accessed not on Linux</remarks>
     public static string[] Config
     {
         get
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                throw new PlatformNotSupportedException();
+                return Array.Empty<string>();
             }
             _config ??= Environment.GetEnvironmentVariable("XDG_CONFIG_DIRS")?.Split(':').ToArray() ?? Array.Empty<string>();
             return _config;
@@ -44,14 +44,14 @@ public class SystemDirectories {
     /// <summary>
     /// Array of paths from XDG_DATA_DIRS
     /// </summary>
-    /// <exception cref="PlatformNotSupportedException">Thrown if used not on Linux</exception>
+    /// <remarks>Returns empty array when accessed not on Linux</remarks>
     public static string[] Data
     {
         get
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                throw new PlatformNotSupportedException();
+                return Array.Empty<string>();
             }
             _data ??= Environment.GetEnvironmentVariable("XDG_DATA_DIRS")?.Split(':').ToArray() ?? Array.Empty<string>();
             return _data;
