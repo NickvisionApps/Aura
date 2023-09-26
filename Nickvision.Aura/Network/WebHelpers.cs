@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -30,4 +31,20 @@ public static class WebHelpers
     /// <param name="uri">Uri</param>
     /// <returns>True if connection successful, else false</returns>
     public static async Task<bool> GetIsValidWebsiteAsync(this Uri uri) => (await Client.GetAsync(uri)).StatusCode != HttpStatusCode.NotFound;
+
+    /// <summary>
+    /// Downloads a file from a url to a file on disk
+    /// </summary>
+    /// <param name="url">The url of the file to download</param>
+    /// <param name="path">The path of where to save the file to disk</param>
+    /// <returns>True if successful, else false</returns>
+    public static async Task<bool> GetFileAsync(this HttpClient client, string url, string path)
+    {
+        var bytes = await client.GetByteArrayAsync(url);
+        if(bytes.Length > 0)
+        {
+            await File.WriteAllBytesAsync(path, bytes);
+        }
+        return false;
+    }
 }

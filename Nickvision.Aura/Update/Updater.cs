@@ -1,6 +1,10 @@
 ﻿using Nickvision.Aura.Network;
 using Octokit;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Nickvision.Aura.Update;
@@ -16,27 +20,31 @@ public enum VersionType
 /// </summary>
 public class Updater
 {
-    private readonly AppInfo _appInfo;
+    private readonly string _repoOwner;
+    private readonly string _repoName;
     private readonly GitHubClient _github;
+    private int? _latestReleaseId;
 
     /// <summary>
     /// Constructs an Updater
     /// </summary>
-    /// <param name="appInfo">AppInfo</param>
-    public Updater(AppInfo appInfo)
+    public Updater()
     {
-        _appInfo = appInfo;
-        var task = appInfo.SourceRepo.GetIsValidWebsiteAsync();
+        var task = Aura.Active.AppInfo.SourceRepo.GetIsValidWebsiteAsync();
         task.Wait();
         if(!task.Result)
         {
-            throw new ArgumentException("The SourceRepo of the AppInfo is invalid.");
+            throw new ArgumentException("The SourceRepo of the active AppInfo is invalid.");
         }
-        if (_appInfo.SourceRepo.Host.ToLower() != "github.com")
+        if (Aura.Active.AppInfo.SourceRepo.Host.ToLower() != "github.com")
         {
             throw new ArgumentException("The Updater only supports GitHub repos.");
         }
+        var repoFields = Aura.Active.AppInfo.SourceRepo.ToString().Split('/');
+        _repoOwner = repoFields[3];
+        _repoName = repoFields[4];
         _github = new GitHubClient(new ProductHeaderValue("Nickvision.Aura"));
+        _latestReleaseId = null;
     }
 
     /// <summary>
@@ -52,16 +60,51 @@ public class Updater
     public async Task<Version?> GetCurrentPreviewVersionAsync() => await GetCurrentVersionAsync(VersionType.Preview);
 
     /// <summary>
+    /// Downloads and installs an application update for Windows
+    /// </summary>
+    /// <param name="versionType">VersionType</param>
+    /// <returns>True if successful, else false</returns>
+    /// <remarks>GetCurrentStableVersionAsync or GetCurrentPreviewVersionAsync should be called first before running this method</remarks>
+    public async Task<bool> WindowsUpdateAsync(VersionType versionType)
+    {
+        if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || _latestReleaseId == null)
+        {
+            return false;
+        }
+        var release = (await _github.Repository.Release.GetAll(_repoOwner, _repoName)).FirstOrDefault(x => x.Id == _latestReleaseId);
+        if(release != null)
+        {
+            ReleaseAsset? asset = null;
+            foreach(var a in release.Assets)
+            {
+                if(a.Name.ToLower().EndsWith("setup.exe"))
+                {
+                    asset = a;
+                    break;
+                }
+            }
+            if(asset != null)
+            {
+                var path = $"{UserDirectories.Cache}{Path.DirectorySeparatorChar}{asset.Name}";
+                if(await WebHelpers.Client.GetFileAsync(asset.BrowserDownloadUrl, path))
+                {
+                    Process.Start(path);
+                    Environment.Exit(0);
+                }
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Gets the current type version from the source repo
     /// </summary>
     /// <param name="versionType">VersionType</param>
     /// <returns>The Version object representing the current type version. Null if error</returns>
     private async Task<Version?> GetCurrentVersionAsync(VersionType versionType)
     {
-        var repoFields = _appInfo.SourceRepo.ToString().Split('/');
-        var owner = repoFields[3];
-        var name = repoFields[4];
-        var releases = await _github.Repository.Release.GetAll(owner, name);
+        _latestReleaseId = null;
+        var releases = await _github.Repository.Release.GetAll(_repoOwner, _repoName);
         Release? latest = null;
         foreach (var release in releases)
         {
@@ -77,10 +120,12 @@ public class Updater
         {
             try
             {
+                _latestReleaseId = latest.Id;
                 return new Version(latest.TagName);
             }
             catch
             {
+                _latestReleaseId = null;
                 return null;
             }
         }
