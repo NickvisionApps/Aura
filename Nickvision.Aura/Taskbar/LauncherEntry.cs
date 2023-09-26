@@ -23,7 +23,14 @@ internal class LauncherEntry : ILauncherEntry
     /// </summary>
     public int Count
     {
-        get => (int)_properties["count"];
+        get
+        {
+            if (_properties.ContainsKey("count"))
+            {
+                return (int)_properties["count"];
+            }
+            return 0;
+        }
         
         set
         {
@@ -37,8 +44,15 @@ internal class LauncherEntry : ILauncherEntry
     /// </summary>
     public bool CountVisible
     {
-        get => (bool)_properties["count-visible"];
-    
+        get
+        {
+            if (_properties.ContainsKey("count-visible"))
+            {
+                return (bool)_properties["count-visible"];
+            }
+            return false;
+        }
+
         set
         {
             _properties["count-visible"] = value;
@@ -52,7 +66,14 @@ internal class LauncherEntry : ILauncherEntry
     /// <remarks>A number between 0 and 1</remarks>
     public double Progress
     {
-        get => (double)_properties["progress"];
+        get
+        {
+            if (_properties.ContainsKey("progress"))
+            {
+                return (double)_properties["progress"];
+            }
+            return 0.0;
+        }
     
         set
         {
@@ -66,7 +87,14 @@ internal class LauncherEntry : ILauncherEntry
     /// </summary>
     public bool ProgressVisible
     {
-        get => (bool)_properties["progress-visible"];
+        get
+        {
+            if (_properties.ContainsKey("progress-visible"))
+            {
+                return (bool)_properties["progress-visible"];
+            }
+            return false;
+        }
     
         set
         {
@@ -80,7 +108,14 @@ internal class LauncherEntry : ILauncherEntry
     /// </summary>
     public bool Urgent
     {
-        get => (bool)_properties["urgent"];
+        get
+        {
+            if (_properties.ContainsKey("urgent"))
+            {
+                return (bool)_properties["urgent"];
+            }
+            return false;
+        }
 
         set
         {
