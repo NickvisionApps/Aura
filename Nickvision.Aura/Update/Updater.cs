@@ -65,6 +65,7 @@ public class Updater
     /// <param name="versionType">VersionType</param>
     /// <returns>True if successful, else false</returns>
     /// <remarks>GetCurrentStableVersionAsync or GetCurrentPreviewVersionAsync should be called first before running this method</remarks>
+    /// <remarks>Will force quit the current running app to install the update</remarks>
     public async Task<bool> WindowsUpdateAsync(VersionType versionType)
     {
         if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || _latestReleaseId == null)
@@ -90,6 +91,7 @@ public class Updater
                 {
                     Process.Start(path);
                     Environment.Exit(0);
+                    return true;
                 }
             }
         }
