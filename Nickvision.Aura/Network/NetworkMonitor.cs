@@ -13,7 +13,7 @@ public class NetworkMonitor : IDisposable
 {
     private bool _disposed;
     private Connection? _dbusConnection;
-    private INetworkManager? _networkManager;
+    private INetworkMonitor? _networkMonitorDBus;
     private string[]? _networkAddresses;
     
     /// <summary>
@@ -41,20 +41,14 @@ public class NetworkMonitor : IDisposable
         {
             try
             {
-                netmon._dbusConnection = new Connection(Address.System);
+                netmon._dbusConnection = new Connection(Address.Session);
                 await netmon._dbusConnection.ConnectAsync();
-                netmon._networkManager = netmon._dbusConnection.CreateProxy<INetworkManager>("org.freedesktop.NetworkManager", new ObjectPath("/org/freedesktop/NetworkManager"));
-                await netmon._networkManager.WatchStateChangedAsync(state => netmon._stateChanged?.Invoke(netmon, state switch
-                {
-                    NetworkState.ConnectedGlobal => true,
-                    NetworkState.ConnectedSite => true,
-                    NetworkState.Unknown => true,
-                    _ => false
-                }));
+                netmon._networkMonitorDBus = netmon._dbusConnection.CreateProxy<INetworkMonitor>("org.freedesktop.portal.Desktop", new ObjectPath("/org/freedesktop/portal/desktop"));
+                await netmon._networkMonitorDBus.WatchchangedAsync(async () => netmon._stateChanged?.Invoke(netmon, await netmon._networkMonitorDBus.GetAvailableAsync()));
             }
             catch
             {
-                netmon._networkManager = null;
+                netmon._networkMonitorDBus = null;
                 netmon.SetupPing();
             }
         }
@@ -115,16 +109,9 @@ public class NetworkMonitor : IDisposable
     /// <returns>True if internet connection, else false</returns>
     public async Task<bool> GetStateAsync()
     {
-        if (_networkManager != null)
+        if (_networkMonitorDBus != null)
         {
-            return (await _networkManager.GetAsync<NetworkState>("State")) switch
-            {
-                NetworkState.ConnectedGlobal => true,
-                NetworkState.ConnectedSite => true,
-                NetworkState.ConnectedLocal => true,
-                NetworkState.Unknown => true,
-                _ => false
-            };
+            return await _networkMonitorDBus.GetAvailableAsync();
         }
         return await PingReliableSitesAsync();
     }
