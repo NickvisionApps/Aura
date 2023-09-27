@@ -42,5 +42,5 @@ internal class NetworkMonitorProperties
 
 internal static class NetworkMonitorExtensions
 {
-    public static Task<uint> GetVersionAsync(this INetworkMonitor o) => await o.GetAsync<uint>("version");
+    public static async Task<uint> GetVersionAsync(this INetworkMonitor o) => await o.GetAsync<uint>("version");
 }
