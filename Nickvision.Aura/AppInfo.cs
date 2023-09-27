@@ -98,16 +98,19 @@ public class AppInfo
     }
     
     /// <summary>
-    /// Convert changelog to HTML format
+    /// Gets changelog in HTML format
     /// </summary>
-    /// <returns>HTML string</returns>
     public string HTMLChangelog
     {
         get
         {
             var result = new StringBuilder();
-            foreach (var line in Changelog.Trim().Split(Environment.NewLine))
+            foreach (var line in Changelog.Trim().Split("\n"))
             {
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
                 result.Append(line.Trim());
                 result.Append(Environment.NewLine);
             }
@@ -116,7 +119,34 @@ public class AppInfo
     }
 
     /// <summary>
-    /// Convert dictionary with urls to string array
+    /// Gets list of translator names (without URLs)
+    /// </summary>
+    public List<string> TranslatorNames
+    {
+        get
+        {
+            var result = new List<string> ();
+            foreach (var line in TranslatorCredits.Split("\n"))
+            {
+                if (line.IndexOf("<") > -1)
+                {
+                    result.Add(line.Substring(0, line.IndexOf("<")).Trim());
+                }
+                else if (line.IndexOf("http") > -1)
+                {
+                    result.Add(line.Substring(0, line.IndexOf("http")).Trim());
+                }
+                else
+                {
+                    result.Add(line);
+                }
+            }
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Converts dictionary with URLs to string array
     /// </summary>
     /// <param name="dict">Dictionary with urls</param>
     /// <returns>String array</returns>
