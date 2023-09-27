@@ -15,7 +15,8 @@
     <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
     <PackageReleaseNotes>- Added Update module to keep track and download application updates for apps not published in a store
-    - Added a static HttpClient that can be accessed from Network.WebHelpers.Client</PackageReleaseNotes>
+    - Added a static HttpClient that can be accessed from Network.WebHelpers.Client
+    - Fixed some issue when using TaskbarItem</PackageReleaseNotes>
     <PackageIcon>logo-r.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
