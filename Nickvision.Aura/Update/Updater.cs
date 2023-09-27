@@ -28,11 +28,23 @@ public class Updater
     /// <summary>
     /// Constructs an Updater
     /// </summary>
-    public Updater()
+    internal Updater()
     {
-        var task = Aura.Active.AppInfo.SourceRepo.GetIsValidWebsiteAsync();
-        task.Wait();
-        if(!task.Result)
+        var repoFields = Aura.Active.AppInfo.SourceRepo.ToString().Split('/');
+        _repoOwner = repoFields[3];
+        _repoName = repoFields[4];
+        _github = new GitHubClient(new ProductHeaderValue("Nickvision.Aura"));
+        _latestReleaseId = null;
+    }
+
+    /// <summary>
+    /// Create and setup new Updater
+    /// </summary>
+    /// <returns>Updater</returns>
+    public static async Task<Updater?> NewAsync()
+    {
+        var valid = await Aura.Active.AppInfo.SourceRepo.GetIsValidWebsiteAsync();
+        if (!valid)
         {
             throw new ArgumentException("The SourceRepo of the active AppInfo is invalid.");
         }
@@ -40,11 +52,7 @@ public class Updater
         {
             throw new ArgumentException("The Updater only supports GitHub repos.");
         }
-        var repoFields = Aura.Active.AppInfo.SourceRepo.ToString().Split('/');
-        _repoOwner = repoFields[3];
-        _repoName = repoFields[4];
-        _github = new GitHubClient(new ProductHeaderValue("Nickvision.Aura"));
-        _latestReleaseId = null;
+        return new Updater();
     }
 
     /// <summary>

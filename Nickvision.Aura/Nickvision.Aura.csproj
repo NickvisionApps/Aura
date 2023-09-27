@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageId>Nickvision.Aura</PackageId>
-    <Version>2023.9.5</Version>
+    <Version>2023.9.6</Version>
     <Company>Nickvision</Company>
     <Authors>Nickvision</Authors>
     <Description>A cross-platform base for Nickvision applications</Description>
@@ -14,10 +14,7 @@
     <Copyright>(c) Nickvision 2021-2023</Copyright>
     <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
-    <PackageReleaseNotes>- Added Update module to keep track and download application updates for apps not published in a store
-- Added a static HttpClient that can be accessed from Network.WebHelpers.Client
-- Fixed some issue when using TaskbarItem
-- NetworkMonitor now uses Freedesktop NetworkMonitor portal on Linux instead of NetworkManager</PackageReleaseNotes>
+    <PackageReleaseNotes>- Updater bug fixes</PackageReleaseNotes>
     <PackageIcon>logo-r.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

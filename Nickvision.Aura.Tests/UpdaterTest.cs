@@ -12,7 +12,8 @@ public class UpdaterTest
         var currentVersion = new Version("2023.8.0");
         Aura.Init("org.nickvision.test", "Nickvision Test");
         Aura.Active.AppInfo.SourceRepo = new Uri("https://github.com/NickvisionApps/Denaro");
-        var updater = new Updater();
+        var updater = await Updater.NewAsync();
+        Assert.NotNull(updater);
         var latestUpdate = await updater.GetCurrentStableVersionAsync();
         Skip.If(latestUpdate == null);
         Assert.True(latestUpdate > currentVersion);
