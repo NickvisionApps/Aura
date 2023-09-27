@@ -15,7 +15,7 @@ public class TaskbarItem : IDisposable
     private readonly LauncherEntry? _unityLauncher;
     private readonly nint _hwnd;
     private readonly ITaskbarList3? _taskbarList;
-    
+
     /// <summary>
     /// Constructs TaskbarItem for Linux
     /// </summary>
@@ -41,7 +41,7 @@ public class TaskbarItem : IDisposable
     /// Finalizes the TaskbarItem
     /// </summary>
     ~TaskbarItem() => Dispose(false);
-    
+
     /// <summary>
     /// Frees resources used by the TaskbarItem object
     /// </summary>
@@ -69,7 +69,7 @@ public class TaskbarItem : IDisposable
         _dbusConnection?.Dispose();
         _disposed = true;
     }
-    
+
     /// <summary>
     /// Connects to an item on the taskbar on Linux
     /// </summary>
@@ -89,8 +89,9 @@ public class TaskbarItem : IDisposable
             await t._dbusConnection.RegisterObjectAsync(t._unityLauncher);
             return t;
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             return null;
         }
     }
@@ -120,7 +121,7 @@ public class TaskbarItem : IDisposable
             return null;
         }
     }
-    
+
     /// <summary>
     /// Sets progress bar state
     /// </summary>
@@ -137,7 +138,7 @@ public class TaskbarItem : IDisposable
             _taskbarList.SetProgressState(_hwnd, state);
         }
     }
-    
+
     /// <summary>
     /// Sets progress bar value
     /// </summary>
@@ -159,7 +160,7 @@ public class TaskbarItem : IDisposable
             _taskbarList.SetProgressValue(_hwnd, (ulong)(progress * 100), 100u);
         }
     }
-    
+
     /// <summary>
     /// Sets the urgent state that tells the taskbar item to get the user's attention
     /// </summary>
@@ -175,7 +176,7 @@ public class TaskbarItem : IDisposable
             TaskbarFlash.Change(_hwnd, urgent);
         }
     }
-    
+
     /// <summary>
     /// Sets counter state (Linux-only)
     /// </summary>
@@ -187,7 +188,7 @@ public class TaskbarItem : IDisposable
             _unityLauncher.CountVisible = state;
         }
     }
-    
+
     /// <summary>
     /// Sets counter value (Linux-only)
     /// </summary>
@@ -197,6 +198,10 @@ public class TaskbarItem : IDisposable
         if (_unityLauncher != null)
         {
             _unityLauncher.Count = count;
+            if (!_unityLauncher.CountVisible)
+            {
+                _unityLauncher.CountVisible = true;
+            }
         }
     }
 }
