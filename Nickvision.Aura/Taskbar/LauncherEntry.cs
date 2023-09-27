@@ -133,7 +133,7 @@ internal class LauncherEntry : ILauncherEntry
     {
         _appUri = $"application://{desktopFile}";
         // DJB hash
-        var hash = 5318;
+        ulong hash = 5381;
         foreach (var c in _appUri)
         {
             hash = hash * 33 + (byte)c;
