@@ -25,6 +25,7 @@ internal interface INetworkMonitor : IDBusObject
 internal class NetworkMonitorProperties
 {
     private uint _version = default(uint);
+
     public uint Version
     {
         get
@@ -34,12 +35,12 @@ internal class NetworkMonitorProperties
 
         set
         {
-            _version = (value);
+            _version = value;
         }
     }
 }
 
 internal static class NetworkMonitorExtensions
 {
-    public static Task<uint> GetVersionAsync(this INetworkMonitor o) => o.GetAsync<uint>("version");
+    public static Task<uint> GetVersionAsync(this INetworkMonitor o) => await o.GetAsync<uint>("version");
 }
