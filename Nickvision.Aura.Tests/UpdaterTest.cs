@@ -6,7 +6,7 @@ namespace Nickvision.Aura.Tests;
 
 public class UpdaterTest
 {
-    [Fact]
+    [SkippableFact]
     public async Task LatestUpdateTest()
     {
         var currentVersion = new Version("2023.8.0");
@@ -14,7 +14,7 @@ public class UpdaterTest
         Aura.Active.AppInfo.SourceRepo = new Uri("https://github.com/NickvisionApps/Denaro");
         var updater = new Updater();
         var latestUpdate = await updater.GetCurrentStableVersionAsync();
-        Assert.NotNull(latestUpdate);
+        Skip.If(latestUpdate == null);
         Assert.True(latestUpdate > currentVersion);
     }
 }

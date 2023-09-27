@@ -86,7 +86,7 @@ public class Updater
             }
             if(asset != null)
             {
-                var path = $"{UserDirectories.Cache}{Path.DirectorySeparatorChar}{asset.Name}";
+                var path = $"{UserDirectories.ApplicationCache}{Path.DirectorySeparatorChar}{asset.Name}";
                 if(await WebHelpers.Client.GetFileAsync(asset.BrowserDownloadUrl, path))
                 {
                     Process.Start(path);

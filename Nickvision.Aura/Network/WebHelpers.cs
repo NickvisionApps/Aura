@@ -30,7 +30,17 @@ public static class WebHelpers
     /// </summary>
     /// <param name="uri">Uri</param>
     /// <returns>True if connection successful, else false</returns>
-    public static async Task<bool> GetIsValidWebsiteAsync(this Uri uri) => (await Client.GetAsync(uri)).StatusCode != HttpStatusCode.NotFound;
+    public static async Task<bool> GetIsValidWebsiteAsync(this Uri uri)
+    {
+        try
+        {
+            return (await Client.GetAsync(uri)).StatusCode != HttpStatusCode.NotFound;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     /// <summary>
     /// Downloads a file from a url to a file on disk
