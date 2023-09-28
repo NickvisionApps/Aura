@@ -152,11 +152,13 @@ public class AppInfo
     /// <returns>String array</returns>
     public string[] ConvertURLDictToArray(Dictionary<string, Uri> dict)
     {
-        var list = new List<string>();
+        var arr = new string[dict.Count]
+        var i = 0;
         foreach (var pair in dict)
         {
-            list.Add($"{pair.Key} {pair.Value}");
+            arr[i] = $"{pair.Key} {pair.Value}";
+            i++;
         }
-        return list.ToArray();
+        return arr;
     }
 }
