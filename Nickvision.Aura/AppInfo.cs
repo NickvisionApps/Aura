@@ -152,7 +152,7 @@ public class AppInfo
     /// <returns>String array</returns>
     public string[] ConvertURLDictToArray(Dictionary<string, Uri> dict)
     {
-        var arr = new string[dict.Count]
+        var arr = new string[dict.Count];
         var i = 0;
         foreach (var pair in dict)
         {
