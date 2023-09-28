@@ -21,13 +21,13 @@ internal class LauncherEntry : ILauncherEntry
     /// <summary>
     /// A number to display on the launcher icon
     /// </summary>
-    public int Count
+    public long Count
     {
         get
         {
             if (_properties.ContainsKey("count"))
             {
-                return (int)_properties["count"];
+                return (long)_properties["count"];
             }
             return 0;
         }
