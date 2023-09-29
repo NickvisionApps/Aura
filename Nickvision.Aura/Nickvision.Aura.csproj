@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageId>Nickvision.Aura</PackageId>
-    <Version>2023.9.7</Version>
+    <Version>2023.10.0</Version>
     <Company>Nickvision</Company>
     <Authors>Nickvision</Authors>
     <Description>A cross-platform base for Nickvision applications</Description>
@@ -14,7 +14,8 @@
     <Copyright>(c) Nickvision 2021-2023</Copyright>
     <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
-    <PackageReleaseNotes>- Taskbar bug fixes</PackageReleaseNotes>
+    <PackageReleaseNotes>- TaskbarItem's Count property is now long type instead of int to match specs
+- TaskbarItem's Count property can now be used on Windows systems</PackageReleaseNotes>
     <PackageIcon>logo-r.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -24,6 +25,7 @@
     <PackageReference Include="Markdig" Version="0.33.0" />
     <PackageReference Include="Meziantou.Framework.Win32.CredentialManager" Version="1.4.2" />
     <PackageReference Include="Octokit" Version="8.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="Tmds.DBus" Version="0.15.0" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.11" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.6" />
