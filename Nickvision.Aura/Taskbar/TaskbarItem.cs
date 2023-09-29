@@ -159,9 +159,10 @@ public class TaskbarItem : IDisposable
                     _countIconWindows = new System.Drawing.Bitmap(16, 16);
                     var g = System.Drawing.Graphics.FromImage(_countIconWindows);
                     g.FillEllipse(System.Drawing.Brushes.Black, new System.Drawing.Rectangle(0, 0, _countIconWindows.Width, _countIconWindows.Height));
-                    var font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 5.0f);
-                    var stringSize = g.MeasureString(Count.ToString(), font);
-                    g.DrawString(Count.ToString(), font, System.Drawing.Brushes.White, new System.Drawing.Point(Convert.ToInt32((_countIconWindows.Width - stringSize.Width) / 2), Convert.ToInt32((_countIconWindows.Height - stringSize.Height) / 2)));
+                    var s = Count > 99 ? "99+" : Count.ToString();
+                    var font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, Count <= 99 ? (Count > 9 ? 7.5f : 8.0f) : 7.0f);
+                    var stringSize = g.MeasureString(s, font);
+                    g.DrawString(s, font, System.Drawing.Brushes.White, new System.Drawing.Point(Convert.ToInt32((_countIconWindows.Width - stringSize.Width) / 2), Convert.ToInt32((_countIconWindows.Height - stringSize.Height) / 2)));
                     _taskbarList.SetOverlayIcon(_hwnd, _countIconWindows.GetHicon(), Count.ToString());
                 }
             }
@@ -183,7 +184,7 @@ public class TaskbarItem : IDisposable
             {
                 _unityLauncher.Count = _count;
             }
-            CountVisible = true;
+            CountVisible = _count >= 0;
         }
     }
 
