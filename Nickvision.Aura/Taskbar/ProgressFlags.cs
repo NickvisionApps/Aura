@@ -4,7 +4,8 @@ namespace Nickvision.Aura.Taskbar;
 /// Flags that control the current state of the progress button.
 /// Specify only one of the following flags; all states are mutually exclusive of all others.
 /// </summary>
-public enum ProgressFlags {
+public enum ProgressFlags 
+{
     NoProgress = 0,
     Indeterminate = 0x1,
     Normal = 0x2,
