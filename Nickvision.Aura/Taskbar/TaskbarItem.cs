@@ -16,6 +16,8 @@ public class TaskbarItem : IDisposable
     private readonly nint _hwnd;
     private readonly ITaskbarList3? _taskbarList;
     private System.Drawing.Bitmap? _countIconWindows;
+    private System.Drawing.Brush? _countIconBackgroundBrush;
+    private System.Drawing.Brush? _countIconForegroundBrush;
     private ProgressFlags _progressState;
     private double _progress;
     private bool _urgent;
@@ -54,11 +56,15 @@ public class TaskbarItem : IDisposable
     /// Constructs a TaskbarItem for Windows
     /// </summary>
     /// <param name="hwnd">Window handle</param>
-    private TaskbarItem(nint hwnd) : this()
+    /// <param name="countBackgroundBrush">The brush to use for the background of the count icon</param>
+    /// <param name="countForegroundBrush">The brush to use for the foreground of the count icon</param>
+    private TaskbarItem(nint hwnd, System.Drawing.Brush countBackgroundBrush, System.Drawing.Brush countForegroundBrush) : this()
     {
         _hwnd = hwnd;
         _taskbarList = (ITaskbarList3)new CTaskbarList();
         _taskbarList.HrInit();
+        _countIconBackgroundBrush = countBackgroundBrush;
+        _countIconForegroundBrush = countForegroundBrush;
     }
 
     /// <summary>
@@ -156,14 +162,19 @@ public class TaskbarItem : IDisposable
                 }
                 else
                 {
+                    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+                    extern static bool DestroyIcon(IntPtr handle);
+
                     _countIconWindows = new System.Drawing.Bitmap(16, 16);
                     var g = System.Drawing.Graphics.FromImage(_countIconWindows);
-                    g.FillEllipse(System.Drawing.Brushes.Black, new System.Drawing.Rectangle(0, 0, _countIconWindows.Width, _countIconWindows.Height));
+                    g.FillEllipse(_countIconBackgroundBrush!, new System.Drawing.Rectangle(0, 0, _countIconWindows.Width, _countIconWindows.Height));
                     var s = Count > 99 ? "99+" : Count.ToString();
                     var font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, Count <= 99 ? (Count > 9 ? 7.5f : 8.0f) : 7.0f);
                     var stringSize = g.MeasureString(s, font);
-                    g.DrawString(s, font, System.Drawing.Brushes.White, new System.Drawing.Point(Convert.ToInt32((_countIconWindows.Width - stringSize.Width) / 2), Convert.ToInt32((_countIconWindows.Height - stringSize.Height) / 2)));
-                    _taskbarList.SetOverlayIcon(_hwnd, _countIconWindows.GetHicon(), Count.ToString());
+                    g.DrawString(s, font, _countIconForegroundBrush!, new System.Drawing.Point(Convert.ToInt32((_countIconWindows.Width - stringSize.Width) / 2), Convert.ToInt32((_countIconWindows.Height - stringSize.Height) / 2)));
+                    var hicon = _countIconWindows.GetHicon();
+                    _taskbarList.SetOverlayIcon(_hwnd, hicon, Count.ToString());
+                    DestroyIcon(hicon);
                 }
             }
         }
@@ -243,9 +254,11 @@ public class TaskbarItem : IDisposable
     /// Connects to an item on the taskbar on Windows
     /// </summary>
     /// <param name="hwnd">Window handle</param>
+    /// <param name="countBackgroundBrush">The brush to use for the background of the count icon</param>
+    /// <param name="countForegroundBrush">The brush to use for the foreground of the count icon</param>
     /// <exception cref="PlatformNotSupportedException">Thrown if called not on Windows</exception>
     /// <exception cref="ArgumentException">Thrown if hwnd is IntPtr.Zero</exception>
-    public static TaskbarItem? ConnectWindows(nint hwnd)
+    public static TaskbarItem? ConnectWindows(nint hwnd, System.Drawing.Brush countBackgroundBrush, System.Drawing.Brush countForegroundBrush)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
@@ -257,7 +270,7 @@ public class TaskbarItem : IDisposable
         }
         try
         {
-            return new TaskbarItem(hwnd);
+            return new TaskbarItem(hwnd, countBackgroundBrush, countForegroundBrush);
         }
         catch (Exception e)
         {
