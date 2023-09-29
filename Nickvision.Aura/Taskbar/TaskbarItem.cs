@@ -156,21 +156,22 @@ public class TaskbarItem : IDisposable
                 }
                 else
                 {
-                    var bitmap = new System.Drawing.Bitmap(8, 8);
-                    var g = System.Drawing.Graphics.FromImage(bitmap);
-                    var outerRect = new System.Drawing.Rectangle(-1, -1, bitmap.Width + 1, bitmap.Height + 1);
+                    _countIconWindows = new System.Drawing.Bitmap(16, 16);
+                    var g = System.Drawing.Graphics.FromImage(_countIconWindows);
+                    var outerRect = new System.Drawing.Rectangle(-1, -1, _countIconWindows.Width + 1, _countIconWindows.Height + 1);
                     var innerRect = System.Drawing.Rectangle.Inflate(outerRect, -2, -2);
                     g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear;
                     g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
                     g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
                     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                     using var path = new System.Drawing.Drawing2D.GraphicsPath();
-                    g.FillRectangle(System.Drawing.Brushes.Black, new System.Drawing.RectangleF(0, 0, 4, 4));
+                    g.FillRectangle(System.Drawing.Brushes.Black, new System.Drawing.RectangleF(0, 0, 8, 8));
                     path.AddEllipse(innerRect);
                     g.FillPath(System.Drawing.Brushes.White, path);
-                    var stringSize = g.MeasureString(Count.ToString(), System.Drawing.SystemFonts.DefaultFont);
-                    g.DrawString(Count.ToString(), System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Black, new System.Drawing.Point(Convert.ToInt32((4 - stringSize.Width) / 2), Convert.ToInt32((4 - stringSize.Height) / 2)));
-                    _taskbarList.SetOverlayIcon(_hwnd, bitmap.GetHicon(), Count.ToString());
+                    var font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 5.0f);
+                    var stringSize = g.MeasureString(Count.ToString(), font);
+                    g.DrawString(Count.ToString(), font, System.Drawing.Brushes.Black, new System.Drawing.Point(Convert.ToInt32((8 - stringSize.Width) / 2), Convert.ToInt32((8 - stringSize.Height) / 2)));
+                    _taskbarList.SetOverlayIcon(_hwnd, _countIconWindows.GetHicon(), Count.ToString());
                 }
             }
         }
