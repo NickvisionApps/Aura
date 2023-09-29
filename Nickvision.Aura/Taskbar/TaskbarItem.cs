@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Tmds.DBus;
@@ -11,7 +12,7 @@ namespace Nickvision.Aura.Taskbar;
 public class TaskbarItem : IDisposable
 {
     private bool _disposed;
-    private Connection? _dbusConnection;
+    private readonly Connection? _dbusConnection;
     private readonly LauncherEntry? _unityLauncher;
     private readonly nint _hwnd;
     private readonly ITaskbarList3? _taskbarList;
@@ -22,20 +23,38 @@ public class TaskbarItem : IDisposable
     private long _count;
 
     /// <summary>
-    /// Constructs TaskbarItem for Linux
+    /// Constructs a generic TaskbarItem
     /// </summary>
-    /// <param name="desktopFile">Desktop file name with extension</param>
-    private TaskbarItem(string desktopFile)
+    private TaskbarItem()
     {
-        _unityLauncher = new LauncherEntry(desktopFile);
         _disposed = false;
+        _dbusConnection = null;
+        _unityLauncher = null;
+        _hwnd = IntPtr.Zero;
+        _taskbarList = null;
+        _progressState = ProgressFlags.NoProgress;
+        _progress = 0;
+        _urgent = false;
+        _countVisible = false;
+        _count = 0;
     }
 
     /// <summary>
-    /// Constructs TaskbarItem for Windows
+    /// Constructs a TaskbarItem for Linux
+    /// </summary>
+    /// <param name="desktopFile">Desktop file name with extension</param>
+    /// <param name="dbus">The dbus connection object</param>
+    private TaskbarItem(string desktopFile, Connection? dbus) : this()
+    {
+        _unityLauncher = new LauncherEntry(desktopFile);
+        _dbusConnection = dbus;
+    }
+
+    /// <summary>
+    /// Constructs a TaskbarItem for Windows
     /// </summary>
     /// <param name="hwnd">Window handle</param>
-    private TaskbarItem(nint hwnd)
+    private TaskbarItem(nint hwnd) : this()
     {
         _hwnd = hwnd;
         _taskbarList = (ITaskbarList3)new CTaskbarList();
@@ -201,9 +220,8 @@ public class TaskbarItem : IDisposable
         }
         try
         {
-            var t = new TaskbarItem(desktopFile);
-            t._dbusConnection = new Connection(Address.Session);
-            await t._dbusConnection.ConnectAsync();
+            var t = new TaskbarItem(desktopFile, new Connection(Address.Session));
+            await t._dbusConnection!.ConnectAsync();
             await t._dbusConnection.RegisterObjectAsync(t._unityLauncher);
             return t;
         }
@@ -234,8 +252,9 @@ public class TaskbarItem : IDisposable
         {
             return new TaskbarItem(hwnd);
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             return null;
         }
     }
