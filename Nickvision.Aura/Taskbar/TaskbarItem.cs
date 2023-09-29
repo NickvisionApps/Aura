@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Tmds.DBus;
@@ -16,6 +15,7 @@ public class TaskbarItem : IDisposable
     private readonly LauncherEntry? _unityLauncher;
     private readonly nint _hwnd;
     private readonly ITaskbarList3? _taskbarList;
+    private System.Drawing.Bitmap? _countIconWindows;
     private ProgressFlags _progressState;
     private double _progress;
     private bool _urgent;
@@ -148,13 +148,29 @@ public class TaskbarItem : IDisposable
             }
             if (_taskbarList != null)
             {
+                _countIconWindows?.Dispose();
+                _countIconWindows = null;
                 if (!_countVisible)
                 {
                     _taskbarList.SetOverlayIcon(_hwnd, IntPtr.Zero, "");
                 }
                 else
                 {
-                    //Generate hicon with count value and show it
+                    var bitmap = new System.Drawing.Bitmap(8, 8);
+                    var g = System.Drawing.Graphics.FromImage(bitmap);
+                    var outerRect = new System.Drawing.Rectangle(-1, -1, bitmap.Width + 1, bitmap.Height + 1);
+                    var innerRect = System.Drawing.Rectangle.Inflate(outerRect, -2, -2);
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear;
+                    g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                    g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    using var path = new System.Drawing.Drawing2D.GraphicsPath();
+                    g.FillRectangle(System.Drawing.Brushes.Black, new System.Drawing.RectangleF(0, 0, 4, 4));
+                    path.AddEllipse(innerRect);
+                    g.FillPath(System.Drawing.Brushes.White, path);
+                    var stringSize = g.MeasureString(Count.ToString(), System.Drawing.SystemFonts.DefaultFont);
+                    g.DrawString(Count.ToString(), System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Black, new System.Drawing.Point(Convert.ToInt32((4 - stringSize.Width) / 2), Convert.ToInt32((4 - stringSize.Height) / 2)));
+                    _taskbarList.SetOverlayIcon(_hwnd, bitmap.GetHicon(), Count.ToString());
                 }
             }
         }
@@ -197,13 +213,11 @@ public class TaskbarItem : IDisposable
         {
             return;
         }
-        if (_unityLauncher != null)
-        {
-            _unityLauncher.CountVisible = false;
-            _unityLauncher.ProgressVisible = false;
-            _unityLauncher.Urgent = false;
-        }
+        CountVisible = false;
+        ProgressState = ProgressFlags.NoProgress;
+        Urgent = false;
         _dbusConnection?.Dispose();
+        _countIconWindows?.Dispose();
         _disposed = true;
     }
 
