@@ -170,7 +170,7 @@ public class TaskbarItem : IDisposable
                     var g = System.Drawing.Graphics.FromImage(_countIconWindows);
                     g.FillEllipse(_countIconBackgroundBrush!, new System.Drawing.Rectangle(0, 0, _countIconWindows.Width, _countIconWindows.Height));
                     var s = Count > 99 ? "99+" : Count.ToString();
-                    var font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, Count <= 99 ? (Count > 9 ? 7.5f : 8.0f) : 7.0f);
+                    var font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, Count <= 99 ? (Count < 10 ? 8.0f : 7.5f) : 7.0f);
                     var stringSize = g.MeasureString(s, font);
                     g.DrawString(s, font, _countIconForegroundBrush!, new System.Drawing.Point(Convert.ToInt32((_countIconWindows.Width - stringSize.Width) / 2), Convert.ToInt32((_countIconWindows.Height - stringSize.Height) / 2)));
                     var hicon = _countIconWindows.GetHicon();
