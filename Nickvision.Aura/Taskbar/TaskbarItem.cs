@@ -152,6 +152,7 @@ public class TaskbarItem : IDisposable
             {
                 _unityLauncher.CountVisible = _countVisible;
             }
+#pragma warning disable CA1416
             if (_taskbarList != null)
             {
                 _countIconWindows?.Dispose();
@@ -177,6 +178,7 @@ public class TaskbarItem : IDisposable
                     DestroyIcon(hicon);
                 }
             }
+#pragma warning restore CA1416
         }
     }
 
@@ -221,7 +223,9 @@ public class TaskbarItem : IDisposable
         ProgressState = ProgressFlags.NoProgress;
         Urgent = false;
         _dbusConnection?.Dispose();
+#pragma warning disable CA1416
         _countIconWindows?.Dispose();
+#pragma warning restore CA1416
         _disposed = true;
     }
 
