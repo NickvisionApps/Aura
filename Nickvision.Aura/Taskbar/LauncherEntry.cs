@@ -25,17 +25,18 @@ internal class LauncherEntry : ILauncherEntry
     {
         get
         {
-            if (_properties.ContainsKey("count"))
-            {
-                return (long)_properties["count"];
-            }
-            return 0;
+            _properties.TryGetValue("count", out var count);
+            return (long?)count ?? 0;
         }
         
         set
         {
-            _properties["count"] = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"count", _properties["count"]} }));
+            _properties.TryGetValue("count", out var current);
+            if ((long?)current != value)
+            {
+                _properties["count"] = value;
+                OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"count", _properties["count"]} }));
+            }
         }
     }
 
@@ -46,17 +47,18 @@ internal class LauncherEntry : ILauncherEntry
     {
         get
         {
-            if (_properties.ContainsKey("count-visible"))
-            {
-                return (bool)_properties["count-visible"];
-            }
-            return false;
+            _properties.TryGetValue("count-visible", out var countVisible);
+            return (bool?)countVisible ?? false;
         }
 
         set
         {
-            _properties["count-visible"] = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"count-visible", _properties["count-visible"]} }));
+            _properties.TryGetValue("count-visible", out var current);
+            if ((bool?)current != value)
+            {
+                _properties["count-visible"] = value;
+                OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"count-visible", _properties["count-visible"]} }));
+            }
         }
     }
 
@@ -68,17 +70,18 @@ internal class LauncherEntry : ILauncherEntry
     {
         get
         {
-            if (_properties.ContainsKey("progress"))
-            {
-                return (double)_properties["progress"];
-            }
-            return 0.0;
+            _properties.TryGetValue("progress", out var progress);
+            return (double?)progress ?? 0.0;
         }
     
         set
         {
-            _properties["progress"] = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"progress", _properties["progress"]} }));
+            _properties.TryGetValue("progress", out var current);
+            if (current == null || Math.Abs((double)current - value) >= 0.01)
+            {
+                _properties["progress"] = value;
+                OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"progress", _properties["progress"]} }));
+            }
         }
     }
 
@@ -89,17 +92,18 @@ internal class LauncherEntry : ILauncherEntry
     {
         get
         {
-            if (_properties.ContainsKey("progress-visible"))
-            {
-                return (bool)_properties["progress-visible"];
-            }
-            return false;
+            _properties.TryGetValue("progress-visible", out var progressVisible);
+            return (bool?)progressVisible ?? false;
         }
     
         set
         {
-            _properties["progress-visible"] = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"progress-visible", _properties["progress-visible"]} }));
+            _properties.TryGetValue("progress-visible", out var current);
+            if ((bool?) current != value)
+            {
+                _properties["progress-visible"] = value;
+                OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"progress-visible", _properties["progress-visible"]} }));
+            }
         }
     }
 
@@ -110,17 +114,18 @@ internal class LauncherEntry : ILauncherEntry
     {
         get
         {
-            if (_properties.ContainsKey("urgent"))
-            {
-                return (bool)_properties["urgent"];
-            }
-            return false;
+            _properties.TryGetValue("urgemt", out var urgent);
+            return (bool?)urgent ?? false;
         }
 
         set
         {
-            _properties["urgent"] = value;
-            OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"urgent", _properties["urgent"]} }));
+            _properties.TryGetValue("urgent", out var current);
+            if ((bool?)current != value)
+            {
+                _properties["urgent"] = value;
+                OnUpdate?.Invoke((_appUri, new Dictionary<string, object> { {"urgent", _properties["urgent"]} }));
+            }
         }
     }
     
