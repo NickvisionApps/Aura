@@ -139,7 +139,7 @@ public class TaskbarItem : IDisposable
     }
 
     /// <summary>
-    /// Whether or not the taskbar icon has a count visble
+    /// Whether or not the taskbar icon has a count visible
     /// </summary>
     public bool CountVisible
     {
