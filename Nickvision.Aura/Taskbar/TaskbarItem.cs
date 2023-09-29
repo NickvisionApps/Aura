@@ -19,7 +19,7 @@ public class TaskbarItem : IDisposable
     private double _progress;
     private bool _urgent;
     private bool _countVisible;
-    private int _count;
+    private long _count;
 
     /// <summary>
     /// Constructs TaskbarItem for Linux
@@ -145,7 +145,7 @@ public class TaskbarItem : IDisposable
     /// Count value
     /// </summary>
     /// <remarks>Changing count value automatically sets count visible to true</remarks>
-    public int Count
+    public long Count
     {
         get => _count;
 
