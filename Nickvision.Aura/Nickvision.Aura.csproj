@@ -14,7 +14,8 @@
     <Copyright>(c) Nickvision 2021-2023</Copyright>
     <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
-    <PackageReleaseNotes>- LauncherEntry's Count property is now long type instead of int to match specs</PackageReleaseNotes>
+    <PackageReleaseNotes>- TaskbarItem's Count property is now long type instead of int to match specs
+- TaskbarItem's Count property can now be used on Windows systems</PackageReleaseNotes>
     <PackageIcon>logo-r.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
