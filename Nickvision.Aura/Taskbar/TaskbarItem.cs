@@ -75,7 +75,7 @@ public class TaskbarItem : IDisposable
     /// <summary>
     /// Progress bar state
     /// </summary>
-    /// <remarks>>On Linux, Indeterminate is the same as NoProgress, and Error and Paused are the same as Normal</remarks>
+    /// <remarks>On Linux, Indeterminate is the same as NoProgress, and Error and Paused are the same as Normal</remarks>
     public ProgressFlags ProgressState
     {
         get => _progressState;
@@ -95,7 +95,7 @@ public class TaskbarItem : IDisposable
     }
 
     /// <summary>
-    /// Progress bar value
+    /// Progress bar value (a number between 0 and 1)
     /// </summary>
     /// <remarks>Changing progress bar value automatically sets progress state to normal</remarks>
     public double Progress
@@ -185,7 +185,7 @@ public class TaskbarItem : IDisposable
     /// <summary>
     /// Count value
     /// </summary>
-    /// <remarks>Changing count value automatically sets count visible to true</remarks>
+    /// <remarks>Changing count value automatically sets <see cref="CountVisible"/> to true if count is &gt;=0, otherewise <see cref="CountVisible"/> will be set to false</remarks>
     public long Count
     {
         get => _count;
