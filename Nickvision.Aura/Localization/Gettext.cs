@@ -16,10 +16,10 @@ public static class Gettext
     /// </summary>
     static Gettext()
     {
-        var name = Aura.Active.AppInfo.EnglishShortName.ToLower();
+        var name = Aura.Active.AppInfo.EnglishShortName.Replace(" ", "").ToLower();
         if (string.IsNullOrEmpty(name))
         {
-            name = Aura.Active.AppInfo.Name.Replace(' ', '_').ToLower();
+            name = Aura.Active.AppInfo.Name.Replace(" ", "").ToLower();
         }
         _catalog = new Catalog(Aura.Active.AppInfo.EnglishShortName.ToLower(), Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
     }
