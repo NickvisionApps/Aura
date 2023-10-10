@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageId>Nickvision.Aura</PackageId>
-    <Version>2023.10.0</Version>
+    <Version>2023.10.1-next</Version>
     <Company>Nickvision</Company>
     <Authors>Nickvision</Authors>
     <Description>A cross-platform base for Nickvision applications</Description>
@@ -14,8 +14,9 @@
     <Copyright>(c) Nickvision 2021-2023</Copyright>
     <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
-    <PackageReleaseNotes>- TaskbarItem's Count property is now long type instead of int to match specs
-- TaskbarItem's Count property can now be used on Windows systems</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added DependencyLocator
+- Added Helpers.AsyncHelpers
+- Moved configuration classes to Configuration namespace</PackageReleaseNotes>
     <PackageIcon>logo-r.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

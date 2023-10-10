@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nickvision.Aura.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Tmds.DBus;

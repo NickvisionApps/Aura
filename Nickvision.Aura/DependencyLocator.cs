@@ -13,7 +13,7 @@ public static class DependencyLocator
     private static readonly Dictionary<string, string?> _locations;
 
     /// <summary>
-    /// Constructs a DependencyLocator
+    /// Constructs a static DependencyLocator
     /// </summary>
     static DependencyLocator()
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Nickvision.Aura;
+namespace Nickvision.Aura.Configuration;
 
 /// <summary>
 /// Base class for configuration files
