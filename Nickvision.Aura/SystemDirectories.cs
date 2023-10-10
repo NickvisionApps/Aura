@@ -7,11 +7,12 @@ namespace Nickvision.Aura;
 /// <summary>
 /// System directories paths
 /// </summary>
-public class SystemDirectories {
+public class SystemDirectories
+{
     private static string[]? _path;
     private static string[]? _config;
     private static string[]? _data;
-    
+
     /// <summary>
     /// Array of paths from PATH variable
     /// </summary>
@@ -23,7 +24,7 @@ public class SystemDirectories {
             return _path;
         }
     }
-    
+
     /// <summary>
     /// Array of paths from XDG_CONFIG_DIRS
     /// </summary>

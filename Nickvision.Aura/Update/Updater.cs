@@ -76,26 +76,26 @@ public class Updater
     /// <remarks>Will force quit the current running app to install the update</remarks>
     public async Task<bool> WindowsUpdateAsync(VersionType versionType)
     {
-        if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || _latestReleaseId == null)
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || _latestReleaseId == null)
         {
             return false;
         }
         var release = (await _github.Repository.Release.GetAll(_repoOwner, _repoName)).FirstOrDefault(x => x.Id == _latestReleaseId);
-        if(release != null)
+        if (release != null)
         {
             ReleaseAsset? asset = null;
-            foreach(var a in release.Assets)
+            foreach (var a in release.Assets)
             {
-                if(a.Name.ToLower().EndsWith("setup.exe"))
+                if (a.Name.ToLower().EndsWith("setup.exe"))
                 {
                     asset = a;
                     break;
                 }
             }
-            if(asset != null)
+            if (asset != null)
             {
                 var path = $"{UserDirectories.ApplicationCache}{Path.DirectorySeparatorChar}{asset.Name}";
-                if(await WebHelpers.Client.GetFileAsync(asset.BrowserDownloadUrl, path))
+                if (await WebHelpers.Client.GetFileAsync(asset.BrowserDownloadUrl, path))
                 {
                     Process.Start(path);
                     Environment.Exit(0);
@@ -118,7 +118,7 @@ public class Updater
         Release? latest = null;
         foreach (var release in releases)
         {
-            if((versionType == VersionType.Stable && !release.Prerelease) || versionType == VersionType.Preview && release.Prerelease)
+            if ((versionType == VersionType.Stable && !release.Prerelease) || versionType == VersionType.Preview && release.Prerelease)
             {
                 if (latest == null || (latest != null && release.CreatedAt > latest.CreatedAt))
                 {
@@ -126,7 +126,7 @@ public class Updater
                 }
             }
         }
-        if(latest != null)
+        if (latest != null)
         {
             try
             {

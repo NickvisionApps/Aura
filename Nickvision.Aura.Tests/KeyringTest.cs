@@ -11,7 +11,7 @@ public class KeyringTest
     {
         _output = output;
     }
-    
+
     [SkippableFact]
     public async Task AccessTest()
     {

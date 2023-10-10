@@ -15,7 +15,7 @@ public class NetworkMonitor : IDisposable
     private Connection? _dbusConnection;
     private INetworkMonitor? _networkMonitorDBus;
     private string[]? _networkAddresses;
-    
+
     /// <summary>
     /// Occurs when the network state is changed
     /// </summary>
@@ -63,7 +63,7 @@ public class NetworkMonitor : IDisposable
     /// Finalizes the NetworkMonitor
     /// </summary>
     ~NetworkMonitor() => Dispose(false);
-    
+
     /// <summary>
     /// Occurs when network state is changed
     /// </summary>
@@ -115,19 +115,19 @@ public class NetworkMonitor : IDisposable
         }
         return await PingReliableSitesAsync();
     }
-    
+
     /// <summary>
     /// Setup network monitor to use dotnet NetworkChange and ping
     /// </summary>
     private void SetupPing()
     {
-        _networkAddresses = new []{ "8.8.8.8", "http://www.baidu.com", "http://www.aparat.com" };
+        _networkAddresses = new[] { "8.8.8.8", "http://www.baidu.com", "http://www.aparat.com" };
         NetworkChange.NetworkAvailabilityChanged += async (sender, e) =>
         {
             _stateChanged?.Invoke(this, await PingReliableSitesAsync());
         };
     }
-    
+
     /// <summary>
     /// Ping reliable web sites to ensure network connection
     /// </summary>

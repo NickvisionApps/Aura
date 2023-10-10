@@ -9,7 +9,7 @@ public class SystemDirectoriesTest
     [Fact]
     public void Path()
     {
-        var path = new []{ "test0", "test1" };
+        var path = new[] { "test0", "test1" };
         Environment.SetEnvironmentVariable("PATH", string.Join(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ";" : ":", path));
         Assert.True(SystemDirectories.Path.SequenceEqual(path));
     }
@@ -21,7 +21,7 @@ public class SystemDirectoriesTest
         {
             Assert.True(SystemDirectories.Config.Length == 0);
         }
-        var config = new []{ "test0", "test1" };
+        var config = new[] { "test0", "test1" };
         Environment.SetEnvironmentVariable("XDG_CONFIG_DIRS", string.Join(":", config));
         Assert.True(SystemDirectories.Config.SequenceEqual(config));
     }
@@ -33,7 +33,7 @@ public class SystemDirectoriesTest
         {
             Assert.True(SystemDirectories.Data.Length == 0);
         }
-        var data = new []{ "test0", "test1" };
+        var data = new[] { "test0", "test1" };
         Environment.SetEnvironmentVariable("XDG_DATA_DIRS", string.Join(":", data));
         Assert.True(SystemDirectories.Data.SequenceEqual(data));
     }

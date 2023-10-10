@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Nickvision.Aura.Keyring;
 
@@ -42,7 +41,7 @@ public class Credential : IComparable<Credential>, IEquatable<Credential>
     /// The password of the credential
     /// </summary>    
     public string Password { get; set; }
-    
+
     /// <summary>
     /// Constructs a Credential
     /// </summary>
@@ -58,7 +57,7 @@ public class Credential : IComparable<Credential>, IEquatable<Credential>
         Username = username;
         Password = password;
     }
-    
+
     /// <summary>
     /// Constructs a Credential
     /// </summary>
