@@ -26,6 +26,11 @@ public class AppInfo
     /// <remarks>Can be translated</remarks>
     public string ShortName { get; set; }
     /// <summary>
+    /// The short name of the application in English
+    /// </summary>
+    /// <remarks>Should not be translated</remarks>
+    public string EnglishShortName { get; set; }
+    /// <summary>
     /// The description of the application
     /// </summary>
     public string Description { get; set; }
@@ -85,6 +90,7 @@ public class AppInfo
         Name = "";
         Description = "";
         ShortName = "";
+        EnglishShortName = "";
         Version = "0.0.0";
         Changelog = "";
         SourceRepo = new Uri("about:blank");
