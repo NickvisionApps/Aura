@@ -27,7 +27,7 @@ public static class DependencyLocator
     /// <returns>The path of the dependency if found, else null</returns>
     public static string? Find(string dependency)
     {
-        if(_locations.ContainsKey(dependency) && !string.IsNullOrEmpty(_locations[dependency]))
+        if (_locations.ContainsKey(dependency) && !string.IsNullOrEmpty(_locations[dependency]))
         {
             return _locations[dependency];
         }

@@ -51,7 +51,7 @@ public static class WebHelpers
     public static async Task<bool> GetFileAsync(this HttpClient client, string url, string path)
     {
         var bytes = await client.GetByteArrayAsync(url);
-        if(bytes.Length > 0)
+        if (bytes.Length > 0)
         {
             await File.WriteAllBytesAsync(path, bytes);
         }

@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using Xunit.Abstractions;
@@ -8,7 +7,7 @@ namespace Nickvision.Aura.Tests;
 public class UserDirectoriesTest
 {
     private readonly ITestOutputHelper _output;
-    
+
     public UserDirectoriesTest(ITestOutputHelper output)
     {
         _output = output;
@@ -80,14 +79,14 @@ public class UserDirectoriesTest
         _output.WriteLine($"Desktop: {UserDirectories.Desktop}");
         Assert.True(Directory.Exists(UserDirectories.Desktop));
     }
-    
+
     [Fact]
     public void Documents()
     {
         _output.WriteLine($"Documents: {UserDirectories.Documents}");
         Assert.True(Directory.Exists(UserDirectories.Documents));
     }
-    
+
     [Fact]
     public void Downloads()
     {
@@ -101,14 +100,14 @@ public class UserDirectoriesTest
         _output.WriteLine($"Music: {UserDirectories.Music}");
         Assert.True(Directory.Exists(UserDirectories.Music));
     }
-    
+
     [Fact]
     public void Pictures()
     {
         _output.WriteLine($"Pictures: {UserDirectories.Pictures}");
         Assert.True(Directory.Exists(UserDirectories.Pictures));
     }
-    
+
     [SkippableFact]
     public void PublicShare()
     {
@@ -116,7 +115,7 @@ public class UserDirectoriesTest
         _output.WriteLine($"PublicShare: {UserDirectories.PublicShare}");
         Assert.True(Directory.Exists(UserDirectories.PublicShare));
     }
-    
+
     [Fact]
     public void Templates()
     {

@@ -12,10 +12,10 @@ public static class UserDirectories
 {
     [DllImport("shell32.dll")]
     private static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid id, int flags, nint token, [MarshalAs(UnmanagedType.LPWStr)] out string path);
-    
-    private static Guid WindowsDownloadsFolderGuid = new ("374DE290-123F-4565-9164-39C4925E467B");
-    private static Dictionary<string, string> _xdgDirectories = new ();
-    
+
+    private static Guid WindowsDownloadsFolderGuid = new("374DE290-123F-4565-9164-39C4925E467B");
+    private static Dictionary<string, string> _xdgDirectories = new();
+
     /// <summary>
     /// Main user directory
     /// </summary>
@@ -90,7 +90,7 @@ public static class UserDirectories
             return path;
         }
     }
-    
+
     /// <summary>
     /// Directory for local data
     /// </summary>

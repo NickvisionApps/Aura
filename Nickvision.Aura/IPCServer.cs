@@ -13,12 +13,12 @@ public class IPCServer
 {
     private readonly string _id;
     private bool _running;
-    
+
     /// <summary>
     /// Occurs when a command is received
     /// </summary>
     public EventHandler<string[]>? CommandReceived;
-    
+
     /// <summary>
     /// Construct IPCServer
     /// </summary>
@@ -27,7 +27,7 @@ public class IPCServer
         _id = Aura.Active.AppInfo.ID;
         _running = false;
     }
-    
+
     /// <summary>
     /// Enable IPCServer.
     /// First it will be checked if the server is already running
@@ -58,7 +58,7 @@ public class IPCServer
         }
         return _running;
     }
-    
+
     /// <summary>
     /// Triggers the server to start listening for commands
     /// </summary>

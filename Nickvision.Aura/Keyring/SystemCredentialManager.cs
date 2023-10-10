@@ -61,7 +61,7 @@ internal static class SystemCredentialManager
                 await items[0].SetSecret(Encoding.UTF8.GetBytes(password), "text/plain; charset=utf8");
                 return password;
             }
-            var lookupAttributes = new Dictionary<string, string> {{ "application", name.ToLower() }};
+            var lookupAttributes = new Dictionary<string, string> { { "application", name.ToLower() } };
             await _collection!.CreateItemAsync(name, lookupAttributes, Encoding.UTF8.GetBytes(password), "text/plain; charset=utf8", false);
             return password;
         }
@@ -109,7 +109,7 @@ internal static class SystemCredentialManager
             throw new AuraException("Failed to get or create default collection in system keyring.");
         }
         await _collection.UnlockAsync();
-        var lookupAttributes = new Dictionary<string, string> {{ "application", attribute.ToLower() }};
+        var lookupAttributes = new Dictionary<string, string> { { "application", attribute.ToLower() } };
         return await _collection.SearchItemsAsync(lookupAttributes);
     }
 }

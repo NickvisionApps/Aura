@@ -14,7 +14,7 @@ namespace Nickvision.Aura;
 public class Aura
 {
     private static Aura? _instance;
-    
+
     /// <summary>
     /// The AppInfo object
     /// </summary>
@@ -39,7 +39,7 @@ public class Aura
         };
         ConfigFiles = new Dictionary<string, ConfigurationBase>();
     }
-    
+
     /// <summary>
     /// Initialize Aura
     /// </summary>
@@ -54,7 +54,7 @@ public class Aura
         }
         _instance = new Aura(id, name);
     }
-    
+
     /// <summary>
     /// Get currently active instance of Aura
     /// </summary>
@@ -70,7 +70,7 @@ public class Aura
             return _instance;
         }
     }
-    
+
     /// <summary>
     /// Start IPCServer or send command to a running one and quit
     /// </summary>

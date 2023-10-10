@@ -24,7 +24,7 @@ internal class Store : IDisposable
     /// The name of the Store
     /// </summary>
     public string Name { get; init; }
-    
+
     /// <summary>
     /// The location of the Store on disk
     /// </summary>
@@ -59,18 +59,18 @@ internal class Store : IDisposable
     public static Store Create(string name, string password, bool overwrite)
     {
         Directory.CreateDirectory(StoreDir);
-        if(string.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name))
         {
             throw new ArgumentException("The name to create a Store must not be empty.");
         }
-        if(string.IsNullOrEmpty(password))
+        if (string.IsNullOrEmpty(password))
         {
             throw new ArgumentException("The password to create a Store must not be empty.");
         }
         var path = $"{StoreDir}{Path.DirectorySeparatorChar}{name}.nring";
-        if(File.Exists(path))
+        if (File.Exists(path))
         {
-            if(overwrite)
+            if (overwrite)
             {
                 File.Delete(path);
             }
@@ -87,7 +87,7 @@ internal class Store : IDisposable
             Password = password
         }.ConnectionString));
     }
-    
+
     /// <summary>
     /// Loads an existing Store
     /// </summary>
@@ -99,16 +99,16 @@ internal class Store : IDisposable
     /// <returns>The loaded Store object</returns>
     public static Store Load(string name, string password)
     {
-        if(string.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name))
         {
             throw new ArgumentException("The name to create a Store must not be empty.");
         }
-        if(string.IsNullOrEmpty(password))
+        if (string.IsNullOrEmpty(password))
         {
             throw new ArgumentException("The password to create a Store must not be empty.");
         }
         var path = $"{StoreDir}{Path.DirectorySeparatorChar}{name}.nring";
-        if(!File.Exists(path))
+        if (!File.Exists(path))
         {
             throw new FileNotFoundException("A Store is not found with the provided name.");
         }
@@ -127,7 +127,7 @@ internal class Store : IDisposable
             throw new IOException("Unable to access the Store. Make sure the password is correct.");
         }
     }
-    
+
     /// <summary>
     /// Gets whether or not a Store exists
     /// </summary>
@@ -170,7 +170,7 @@ internal class Store : IDisposable
         }
         if (disposing)
         {
-            if(_database.State == ConnectionState.Open)
+            if (_database.State == ConnectionState.Open)
             {
                 _database.Close();
             }
@@ -273,7 +273,7 @@ internal class Store : IDisposable
         await _database.CloseAsync();
         return credentials;
     }
-    
+
     /// <summary>
     /// Adds a Credential to the store
     /// </summary>

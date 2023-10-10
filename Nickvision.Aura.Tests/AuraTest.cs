@@ -1,5 +1,3 @@
-using Xunit.Abstractions;
-
 namespace Nickvision.Aura.Tests;
 
 public class AuraTest

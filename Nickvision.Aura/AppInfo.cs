@@ -102,7 +102,7 @@ public class AppInfo
         Artists = new Dictionary<string, Uri>();
         TranslatorCredits = "";
     }
-    
+
     /// <summary>
     /// Gets changelog in HTML format
     /// </summary>
@@ -131,7 +131,7 @@ public class AppInfo
     {
         get
         {
-            var result = new List<string> ();
+            var result = new List<string>();
             foreach (var line in TranslatorCredits.Split("\n"))
             {
                 if (line.IndexOf("<") > -1)

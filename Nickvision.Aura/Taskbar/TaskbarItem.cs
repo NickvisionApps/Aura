@@ -185,7 +185,7 @@ public class TaskbarItem : IDisposable
     /// <summary>
     /// Count value
     /// </summary>
-    /// <remarks>Changing count value automatically sets <see cref="CountVisible"/> to true if count is &gt;=0, otherewise <see cref="CountVisible"/> will be set to false</remarks>
+    /// <remarks>Changing count value automatically sets <see cref="CountVisible"/> to true if count is &gt;=0, otherwise <see cref="CountVisible"/> will be set to false</remarks>
     public long Count
     {
         get => _count;

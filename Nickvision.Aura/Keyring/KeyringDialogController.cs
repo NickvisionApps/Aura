@@ -1,4 +1,3 @@
-using Nickvision.Aura.Keyring;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -46,11 +45,11 @@ public class KeyringDialogController
     /// <exception cref="ArgumentException">Thrown if the keyring name is empty or if there is a mismatch between the name and Keyring object</exception>
     public KeyringDialogController(string name, Keyring? keyring)
     {
-        if(string.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name))
         {
             throw new ArgumentException("Keyring name can not be empty.");
         }
-        if(keyring != null && keyring.Name != name)
+        if (keyring != null && keyring.Name != name)
         {
             throw new ArgumentException("Provided Keyring object does not match the provided keyring name.");
         }
@@ -64,7 +63,7 @@ public class KeyringDialogController
     /// <returns>True if successful, false is Keyring already enabled or error</returns>
     public async Task<bool> EnableKeyringAsync(string? password = null)
     {
-        if(Keyring == null)
+        if (Keyring == null)
         {
             Keyring = await Keyring.AccessAsync(_keyringName, password);
             return Keyring != null;
@@ -78,7 +77,7 @@ public class KeyringDialogController
     /// <returns>True if successful, false if Keyring already disabled</returns>
     public async Task<bool> DisableKeyringAsync()
     {
-        if(Keyring != null)
+        if (Keyring != null)
         {
             await Keyring.DestroyAsync();
             Keyring = null;
@@ -112,15 +111,15 @@ public class KeyringDialogController
     public CredentialCheckStatus ValidateCredential(string name, string? uri, string username, string password)
     {
         CredentialCheckStatus result = 0;
-        if(string.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name))
         {
             result |= CredentialCheckStatus.EmptyName;
         }
-        if(string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
+        if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
         {
             result |= CredentialCheckStatus.EmptyUsernamePassword;
         }
-        if(!string.IsNullOrEmpty(uri))
+        if (!string.IsNullOrEmpty(uri))
         {
             try
             {
@@ -144,7 +143,7 @@ public class KeyringDialogController
     /// <returns>The list of Credential objects</returns>
     public async Task<List<Credential>> GetAllCredentialsAsync()
     {
-        if(Keyring != null)
+        if (Keyring != null)
         {
             return await Keyring.GetAllCredentialsAsync();
         }
@@ -161,7 +160,7 @@ public class KeyringDialogController
     /// <returns>True if successful, else false</returns>
     public async Task<bool> AddCredentialAsync(string name, string? uri, string username, string password)
     {
-        if(ValidateCredential(name, uri, username, password) == CredentialCheckStatus.Valid && Keyring != null)
+        if (ValidateCredential(name, uri, username, password) == CredentialCheckStatus.Valid && Keyring != null)
         {
             return await Keyring.AddCredentialAsync(new Credential(name, string.IsNullOrEmpty(uri) ? null : new Uri(uri), username, password));
         }
@@ -179,10 +178,10 @@ public class KeyringDialogController
     /// <returns>True if successful, else false</returns>
     public async Task<bool> UpdateCredentialAsync(int id, string name, string? uri, string username, string password)
     {
-        if(ValidateCredential(name, uri, username, password) == CredentialCheckStatus.Valid && Keyring != null)
+        if (ValidateCredential(name, uri, username, password) == CredentialCheckStatus.Valid && Keyring != null)
         {
             var credential = await Keyring.LookupCredentialAsync(id);
-            if(credential != null)
+            if (credential != null)
             {
                 credential.Name = name;
                 credential.Uri = string.IsNullOrEmpty(uri) ? null : new Uri(uri);
@@ -201,7 +200,7 @@ public class KeyringDialogController
     /// <returns>True if successful, else false</returns>
     public async Task<bool> DeleteCredentialAsync(int id)
     {
-        if(Keyring != null)
+        if (Keyring != null)
         {
             return await Keyring.DeleteCredentialAsync(id);
         }

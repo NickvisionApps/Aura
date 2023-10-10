@@ -17,7 +17,7 @@ public static class Gettext
     static Gettext()
     {
         var name = Aura.Active.AppInfo.EnglishShortName.ToLower();
-        if(string.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name))
         {
             name = Aura.Active.AppInfo.Name.Replace(' ', '_').ToLower();
         }

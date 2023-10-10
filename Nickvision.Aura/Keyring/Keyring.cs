@@ -12,7 +12,7 @@ public class Keyring : IDisposable
 {
     private bool _disposed;
     private readonly Store _store;
-    
+
     /// <summary>
     /// The name of the Keyring
     /// </summary>
@@ -139,7 +139,7 @@ public class Keyring : IDisposable
     /// <returns>True if successful, else false</returns>
     public async Task<bool> DestroyAsync()
     {
-        if(_store.Destroy())
+        if (_store.Destroy())
         {
             try
             {
