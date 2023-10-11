@@ -38,12 +38,15 @@ public static class DependencyLocator
         {
             _locations[dependency] = $"{assemblyPath}{Path.DirectorySeparatorChar}{dependency}";
         }
-        foreach (var dir in SystemDirectories.Path)
+        else
         {
-            if (File.Exists($"{dir}{Path.DirectorySeparatorChar}{dependency}"))
+            foreach (var dir in SystemDirectories.Path)
             {
-                _locations[dependency] = $"{dir}{Path.DirectorySeparatorChar}{dependency}";
-                break;
+                if (File.Exists($"{dir}{Path.DirectorySeparatorChar}{dependency}"))
+                {
+                    _locations[dependency] = $"{dir}{Path.DirectorySeparatorChar}{dependency}";
+                    break;
+                }
             }
         }
         return _locations[dependency];
