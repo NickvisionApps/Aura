@@ -27,12 +27,12 @@ public static class DependencyLocator
     /// <returns>The path of the dependency if found, else null</returns>
     public static string? Find(string dependency)
     {
+        dependency = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{dependency}.exe" : dependency;
         if (_locations.ContainsKey(dependency) && !string.IsNullOrEmpty(_locations[dependency]) && File.Exists(_locations[dependency]))
         {
             return _locations[dependency];
         }
         _locations[dependency] = null;
-        dependency = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{dependency}.exe" : dependency;
         var assemblyPath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!);
         if (File.Exists($"{assemblyPath}{Path.DirectorySeparatorChar}{dependency}"))
         {
