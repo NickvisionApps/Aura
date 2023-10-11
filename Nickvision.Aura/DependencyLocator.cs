@@ -42,7 +42,7 @@ public static class DependencyLocator
         {
             foreach (var dir in SystemDirectories.Path)
             {
-                if (File.Exists($"{dir}{Path.DirectorySeparatorChar}{dependency}"))
+                if (File.Exists($"{dir}{Path.DirectorySeparatorChar}{dependency}") && !dir.Contains("AppData\\Local\\Microsoft\\WindowsApps"))
                 {
                     _locations[dependency] = $"{dir}{Path.DirectorySeparatorChar}{dependency}";
                     break;
