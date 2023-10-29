@@ -1,5 +1,6 @@
 ﻿using Nickvision.Aura.Update;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Nickvision.Aura.Tests;
@@ -9,13 +10,15 @@ public class UpdaterTest
     [SkippableFact]
     public async Task LatestUpdateTest()
     {
-        var currentVersion = new Version("2023.8.0");
+        Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Windows));
+        var currentVersion = new Version("2023.9.0");
         Aura.Init("org.nickvision.test", "Nickvision Test");
-        Aura.Active.AppInfo.SourceRepo = new Uri("https://github.com/NickvisionApps/Denaro");
+        Aura.Active.AppInfo.SourceRepo = new Uri("https://github.com/NickvisionApps/Tagger");
         var updater = await Updater.NewAsync();
         Assert.NotNull(updater);
         var latestUpdate = await updater.GetCurrentStableVersionAsync();
-        Skip.If(latestUpdate == null);
-        Assert.True(latestUpdate > currentVersion);
+        Assert.NotNull(latestUpdate);
+        Assert.True(latestUpdate > currentVersion, "There is no update available.");
+        Assert.True(await updater.WindowsUpdateAsync(VersionType.Stable), "Failed to download the latest update.");
     }
 }

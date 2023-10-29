@@ -55,6 +55,6 @@ public static class WebHelpers
         {
             await File.WriteAllBytesAsync(path, bytes);
         }
-        return false;
+        return true;
     }
 }

@@ -80,13 +80,13 @@ public class Updater
         {
             return false;
         }
-        var release = (await _github.Repository.Release.GetAll(_repoOwner, _repoName)).FirstOrDefault(x => x.Id == _latestReleaseId);
+        var release = await _github.Repository.Release.Get(_repoOwner, _repoName, _latestReleaseId!.Value);
         if (release != null)
         {
             ReleaseAsset? asset = null;
             foreach (var a in release.Assets)
             {
-                if (a.Name.ToLower().EndsWith("setup.exe"))
+                if (a.Name.ToLower().Contains("setup.exe"))
                 {
                     asset = a;
                     break;
