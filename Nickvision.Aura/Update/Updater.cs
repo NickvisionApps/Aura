@@ -22,7 +22,8 @@ public class Updater
     private readonly string _repoOwner;
     private readonly string _repoName;
     private readonly GitHubClient _github;
-    private int? _latestReleaseId;
+    private int? _latestStableReleaseId;
+    private int? _latestPreviewReleaseId;
 
     /// <summary>
     /// Constructs an Updater
@@ -33,7 +34,8 @@ public class Updater
         _repoOwner = repoFields[3];
         _repoName = repoFields[4];
         _github = new GitHubClient(new ProductHeaderValue("Nickvision.Aura"));
-        _latestReleaseId = null;
+        _latestStableReleaseId = null;
+        _latestPreviewReleaseId = null;
     }
 
     /// <summary>
@@ -75,11 +77,19 @@ public class Updater
     /// <remarks>Will force quit the current running app to install the update</remarks>
     public async Task<bool> WindowsUpdateAsync(VersionType versionType)
     {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || _latestReleaseId == null)
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || (versionType == VersionType.Stable ? _latestStableReleaseId == null : _latestPreviewReleaseId == null))
         {
             return false;
         }
-        var release = await _github.Repository.Release.Get(_repoOwner, _repoName, _latestReleaseId!.Value);
+        Release? release = null;
+        try
+        {
+            release = await _github.Repository.Release.Get(_repoOwner, _repoName, (versionType == VersionType.Stable ? _latestStableReleaseId!.Value : _latestPreviewReleaseId!.Value));
+        }
+        catch
+        {
+            release = null;
+        }
         if (release != null)
         {
             ReleaseAsset? asset = null;
@@ -112,29 +122,57 @@ public class Updater
     /// <returns>The Version object representing the current type version. Null if error</returns>
     private async Task<Version?> GetCurrentVersionAsync(VersionType versionType)
     {
-        _latestReleaseId = null;
-        var releases = await _github.Repository.Release.GetAll(_repoOwner, _repoName);
-        Release? latest = null;
-        foreach (var release in releases)
+        if(versionType == VersionType.Stable)
         {
-            if ((versionType == VersionType.Stable && !release.Prerelease) || versionType == VersionType.Preview && release.Prerelease)
+            _latestStableReleaseId = null;
+        }
+        else
+        {
+            _latestPreviewReleaseId = null;
+        }
+        Release? latest = null;
+        try
+        {
+            var releases = await _github.Repository.Release.GetAll(_repoOwner, _repoName);
+            foreach (var release in releases)
             {
-                if (latest == null || (latest != null && release.CreatedAt > latest.CreatedAt))
+                if ((versionType == VersionType.Stable && !release.Prerelease) || versionType == VersionType.Preview && release.Prerelease)
                 {
-                    latest = release;
+                    if (latest == null || (latest != null && release.CreatedAt > latest.CreatedAt))
+                    {
+                        latest = release;
+                    }
                 }
             }
+        }
+        catch 
+        { 
+            latest = null;
         }
         if (latest != null)
         {
             try
             {
-                _latestReleaseId = latest.Id;
+                if (versionType == VersionType.Stable)
+                {
+                    _latestStableReleaseId = latest.Id;
+                }
+                else
+                {
+                    _latestPreviewReleaseId = latest.Id;
+                }
                 return new Version(latest.TagName);
             }
             catch
             {
-                _latestReleaseId = null;
+                if (versionType == VersionType.Stable)
+                {
+                    _latestStableReleaseId = null;
+                }
+                else
+                {
+                    _latestPreviewReleaseId = null;
+                }
                 return null;
             }
         }
