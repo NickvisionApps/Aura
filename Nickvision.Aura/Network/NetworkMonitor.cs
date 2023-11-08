@@ -39,7 +39,7 @@ public class NetworkMonitor : IDisposable
     public static async Task<NetworkMonitor> NewAsync()
     {
         var netmon = new NetworkMonitor();
-        var noNetCheckVar = Environment.GetEnvironmentVariable("AURA_DISABLE_NETCHECK").ToLower();
+        var noNetCheckVar = (Environment.GetEnvironmentVariable("AURA_DISABLE_NETCHECK") ?? "").ToLower();
         netmon._noNetCheck = !string.IsNullOrWhiteSpace(noNetCheckVar) && (noNetCheckVar == "true" || noNetCheckVar == "1" || noNetCheckVar == "t" || noNetCheckVar == "yes" || noNetCheckVar == "y");
         if(!netmon._noNetCheck)
         {

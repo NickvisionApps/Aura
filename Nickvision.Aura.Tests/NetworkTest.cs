@@ -11,7 +11,6 @@ public class NetworkTest
     public async Task NetworkAccessTest()
     {
         var netmon = await NetworkMonitor.NewAsync();
-        Skip.If(netmon == null);
         Assert.True(await netmon.GetStateAsync());
     }
 
