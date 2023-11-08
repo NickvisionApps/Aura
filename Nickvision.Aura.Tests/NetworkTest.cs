@@ -10,8 +10,8 @@ public class NetworkTest
     [SkippableFact]
     public async Task NetworkAccessTest()
     {
+        Environment.SetEnvironmentVariable("AURA_DISABLE_NETCHECK", "true");
         var netmon = await NetworkMonitor.NewAsync();
-        Skip.If(netmon == null);
         Assert.True(await netmon.GetStateAsync());
     }
 

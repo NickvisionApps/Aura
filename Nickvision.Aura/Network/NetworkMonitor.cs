@@ -12,6 +12,7 @@ namespace Nickvision.Aura.Network;
 public class NetworkMonitor : IDisposable
 {
     private bool _disposed;
+    private bool _noNetCheck;
     private Connection? _dbusConnection;
     private INetworkMonitor? _networkMonitorDBus;
     private string[]? _networkAddresses;
@@ -28,6 +29,7 @@ public class NetworkMonitor : IDisposable
     private NetworkMonitor()
     {
         _disposed = false;
+        _noNetCheck = false;
     }
 
     /// <summary>
@@ -37,24 +39,29 @@ public class NetworkMonitor : IDisposable
     public static async Task<NetworkMonitor> NewAsync()
     {
         var netmon = new NetworkMonitor();
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        var noNetCheckVar = (Environment.GetEnvironmentVariable("AURA_DISABLE_NETCHECK") ?? "").ToLower();
+        netmon._noNetCheck = !string.IsNullOrWhiteSpace(noNetCheckVar) && (noNetCheckVar == "true" || noNetCheckVar == "1" || noNetCheckVar == "t" || noNetCheckVar == "yes" || noNetCheckVar == "y");
+        if(!netmon._noNetCheck)
         {
-            try
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                netmon._dbusConnection = new Connection(Address.Session);
-                await netmon._dbusConnection.ConnectAsync();
-                netmon._networkMonitorDBus = netmon._dbusConnection.CreateProxy<INetworkMonitor>("org.freedesktop.portal.Desktop", new ObjectPath("/org/freedesktop/portal/desktop"));
-                await netmon._networkMonitorDBus.WatchchangedAsync(async () => netmon._stateChanged?.Invoke(netmon, await netmon._networkMonitorDBus.GetAvailableAsync()));
+                try
+                {
+                    netmon._dbusConnection = new Connection(Address.Session);
+                    await netmon._dbusConnection.ConnectAsync();
+                    netmon._networkMonitorDBus = netmon._dbusConnection.CreateProxy<INetworkMonitor>("org.freedesktop.portal.Desktop", new ObjectPath("/org/freedesktop/portal/desktop"));
+                    await netmon._networkMonitorDBus.WatchchangedAsync(async () => netmon._stateChanged?.Invoke(netmon, await netmon._networkMonitorDBus.GetAvailableAsync()));
+                }
+                catch
+                {
+                    netmon._networkMonitorDBus = null;
+                    netmon.SetupPing();
+                }
             }
-            catch
+            else
             {
-                netmon._networkMonitorDBus = null;
                 netmon.SetupPing();
             }
-        }
-        else
-        {
-            netmon.SetupPing();
         }
         return netmon;
     }
@@ -106,9 +113,13 @@ public class NetworkMonitor : IDisposable
     /// <summary>
     /// Get current network state
     /// </summary>
-    /// <returns>True if internet connection, else false</returns>
+    /// <returns>True if internet connection available, else false</returns>
     public async Task<bool> GetStateAsync()
     {
+        if(_noNetCheck)
+        {
+            return true;
+        }
         if (_networkMonitorDBus != null)
         {
             return await _networkMonitorDBus.GetAvailableAsync();
