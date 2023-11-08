@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageId>Nickvision.Aura</PackageId>
-    <Version>2023.10.2</Version>
+    <Version>2023.11.0</Version>
     <Company>Nickvision</Company>
     <Authors>Nickvision</Authors>
     <Description>A cross-platform base for Nickvision applications</Description>
@@ -14,7 +14,7 @@
     <Copyright>(c) Nickvision 2021-2023</Copyright>
     <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
-    <PackageReleaseNotes>- Fixed an issue where Updater was unable to download a latest Windows release</PackageReleaseNotes>
+    <PackageReleaseNotes>- Expanded DepedencyLocator to find non-exe files on Windows</PackageReleaseNotes>
     <PackageIcon>logo-r.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
