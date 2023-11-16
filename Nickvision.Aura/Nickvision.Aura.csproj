@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageId>Nickvision.Aura</PackageId>
-    <Version>2023.11.2</Version>
+    <Version>2023.11.3</Version>
     <Company>Nickvision</Company>
     <Authors>Nickvision</Authors>
     <Description>A cross-platform base for Nickvision applications</Description>
@@ -14,7 +14,8 @@
     <Copyright>(c) Nickvision 2021-2023</Copyright>
     <PackageProjectUrl>https://nickvision.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NickvisionApps/Aura</RepositoryUrl>
-    <PackageReleaseNotes>- If the AURA_DISABLE_NETCHECK env var is set, NetworkMonitor will always return true when checking connectivity state</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added NotificationSentEventArgs and ShellNotificationSentEventArgs to Nickvision.Aura.Events namespace
+- Updated to .NET 8</PackageReleaseNotes>
     <PackageIcon>logo-r.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -23,11 +24,11 @@
     <PackageReference Include="Ace4896.DBus.Services.Secrets" Version="1.2.0" />
     <PackageReference Include="GetText.NET" Version="1.9.14" />
     <PackageReference Include="Markdig" Version="0.33.0" />
-    <PackageReference Include="Meziantou.Framework.Win32.CredentialManager" Version="1.4.2" />
+    <PackageReference Include="Meziantou.Framework.Win32.CredentialManager" Version="1.4.5" />
     <PackageReference Include="Octokit" Version="9.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
     <PackageReference Include="Tmds.DBus" Version="0.15.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.13" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.6" />
   </ItemGroup>
 
