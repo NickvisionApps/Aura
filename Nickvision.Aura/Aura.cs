@@ -1,7 +1,8 @@
-﻿using Nickvision.Aura.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using Tmds.DBus;
 
 [assembly: InternalsVisibleTo(Connection.DynamicAssemblyName)]
@@ -15,15 +16,12 @@ public class Aura
 {
     private static Aura? _instance;
 
+    private readonly Dictionary<string, ConfigurationBase> _configFiles;
+
     /// <summary>
     /// The AppInfo object
     /// </summary>
     public AppInfo AppInfo { get; init; }
-
-    /// <summary>
-    /// Dictionary of configuration files that were set
-    /// </summary>
-    public Dictionary<string, ConfigurationBase> ConfigFiles { get; init; }
 
     /// <summary>
     /// Construct Aura
@@ -32,12 +30,12 @@ public class Aura
     /// <param name="name">Name for AppInfo</param>
     private Aura(string id, string name)
     {
+        _configFiles = new Dictionary<string, ConfigurationBase>();
         AppInfo = new AppInfo()
         {
             ID = id,
             Name = name
         };
-        ConfigFiles = new Dictionary<string, ConfigurationBase>();
     }
 
     /// <summary>
@@ -88,22 +86,31 @@ public class Aura
     }
 
     /// <summary>
-    /// Set config to be loaded from JSON file
+    /// Gets a config object
     /// </summary>
-    /// <typeparam name="T">Object type</typeparam>
-    /// <param name="key">File name</param>
-    public void SetConfig<T>(string key) where T : ConfigurationBase => ConfigFiles[key] = ConfigurationLoader.Load<T>(key)!;
-
-    /// <summary>
-    /// Save config to JSON file
-    /// </summary>
-    /// <param name="key">File name</param>
-    public void SaveConfig(string key)
+    /// <typeparam name="T">The type of ConfigurationBase</typeparam>
+    /// <param name="key">The name of the config object</param>
+    /// <returns>The initalized config object</returns>
+    public T GetConfig<T>(string key) where T : ConfigurationBase
     {
-        if (!ConfigFiles.ContainsKey(key))
+        if(!_configFiles.ContainsKey(key))
         {
-            throw new AuraException($"Configuration file \"{key}\" was not set.");
+            var path = $"{UserDirectories.ApplicationConfig}{Path.DirectorySeparatorChar}{key}.json";
+            try
+            {
+                _configFiles[key] = JsonSerializer.Deserialize<T>(File.ReadAllText(path))!;
+            }
+            catch
+            {
+                if (File.Exists(path))
+                {
+                    File.Move(path, $"{path}.bak", true);
+                }
+                File.WriteAllText(path, "{}");
+                _configFiles[key] = JsonSerializer.Deserialize<T>("{}")!;
+            }
+            _configFiles[key].Key = key;
         }
-        ConfigurationLoader.Save(ConfigFiles[key], key);
+        return (T)_configFiles[key];
     }
 }
