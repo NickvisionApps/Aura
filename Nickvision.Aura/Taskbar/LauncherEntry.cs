@@ -114,7 +114,7 @@ internal class LauncherEntry : ILauncherEntry
     {
         get
         {
-            _properties.TryGetValue("urgemt", out var urgent);
+            _properties.TryGetValue("urgent", out var urgent);
             return (bool?)urgent ?? false;
         }
 
